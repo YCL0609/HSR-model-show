@@ -105,7 +105,7 @@ async function ChangeLang(lang) {
       await Promise.all([
         // 加载语言数据
         ...['data', 'data2', 'text'].map(async (name) => {
-          const response = await fetch(`${serverRoot}/lang/${lang}/${name}.json?t=${Date.now()}`);
+          const response = await fetch(`${serverRoot}/lang/${lang}/${name}.json`);
           if (!response.ok) InError(4, `语言文件 ${name}.json 获取失败: HTTP ${response.status} ${response.statusText}`);
           const json = await response.json();
           langCfg[lang][name] = json;
