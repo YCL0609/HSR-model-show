@@ -223,7 +223,7 @@ tbody[data-gencell] td {
         margin: 0;
     }
 
-    [data-phone="0"] {
+    [data-phone="1"] {
         display: none;
     }
 

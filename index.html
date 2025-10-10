@@ -10,9 +10,8 @@
     <title>《崩坏:星穹铁道》角色立绘和3D模型展示</title>
     <link href="favicon.ico" rel="shortcut icon">
     <link rel="stylesheet" type="text/css" href="css/index.css">
-    <!-- <script src="//api.ycl.cool/js/function.js"></script> -->
-    <script src="outside/function.js"></script>
-    <script> function log(...obj) { console.log(...obj) } </script>
+    <script src="./js/lib/serverInit.js" type="module"></script>
+    <script src="./outsite/dist/function.bundle.min.js" type="module"></script>
 </head>
 
 <body>
@@ -50,19 +49,15 @@
                 作为CDN加速服务和网络攻击防护服务, 国内部分地区可能出现随机性访问变慢.
             </div>
             <div class="error"></div>
-            <div class="fault"></div>
-            <div class="server">
+            <div class="fault" id="jserror"></div>
+            <div class="server" id="server-choose">
                 <b>资源服务器无法连接或响应超时, 可手动选择服务器尝试<br>The resource server is unreachable or the response timed out. You may
                     manually select a server to attempt.</b><br>
                 <label for="server">服务器(Server): </label>
                 <select id="server">
                     <option value="-1" style="display: none" selected></option>
-                    <option value="0">国际服务器0 - Globe server #0</option>
-                    <option value="1">国际服务器1 - Globe server #1</option>
-                    <option value="9">国内服务器 - China server #CN</option>
                 </select>
                 <button onclick="userChooseServer()">OK</button>
-                <a id="test-result"></a>
             </div>
         </div>
         <div id="form">
@@ -81,11 +76,11 @@
                         <!-- 雷  -->
                         <td><img loading="lazy" decoding="async" src="img/table/Lightning.png"></td>
                         <!-- 风(电脑) -->
-                        <td data-phone="0"><img loading="lazy" decoding="async" src="img/table/Wind.png"></td>
+                        <td data-phone=1><img loading="lazy" decoding="async" src="img/table/Wind.png"></td>
                         <!-- 量子(电脑) -->
-                        <td data-phone="0"><img loading="lazy" decoding="async" src="img/table/Quantum.png"></td>
+                        <td data-phone=1><img loading="lazy" decoding="async" src="img/table/Quantum.png"></td>
                         <!-- 虚数(电脑) -->
-                        <td data-phone="0"><img loading="lazy" decoding="async" src="img/table/Imaginary.png"></td>
+                        <td data-phone=1><img loading="lazy" decoding="async" src="img/table/Imaginary.png"></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -99,9 +94,9 @@
                         <td id="table-12"></td>
                         <td id="table-13"></td>
                         <td id="table-14"></td>
-                        <td id="table-15" data-phone="0"></td>
-                        <td id="table-16" data-phone="0"></td>
-                        <td id="table-17" data-phone="0"></td>
+                        <td id="table-15" data-phone=1></td>
+                        <td id="table-16" data-phone=1></td>
+                        <td id="table-17" data-phone=1></td>
                     </tr>
                     <!-- 巡猎  -->
                     <tr>
@@ -112,9 +107,9 @@
                         <td id="table-22"></td>
                         <td id="table-23"></td>
                         <td id="table-24"></td>
-                        <td id="table-25" data-phone="0"></td>
-                        <td id="table-26" data-phone="0"></td>
-                        <td id="table-27" data-phone="0"></td>
+                        <td id="table-25" data-phone=1></td>
+                        <td id="table-26" data-phone=1></td>
+                        <td id="table-27" data-phone=1></td>
                     </tr>
                     <!-- 智识  -->
                     <tr>
@@ -125,9 +120,9 @@
                         <td id="table-32"></td>
                         <td id="table-33"></td>
                         <td id="table-34"></td>
-                        <td id="table-35" data-phone="0"></td>
-                        <td id="table-36" data-phone="0"></td>
-                        <td id="table-37" data-phone="0"></td>
+                        <td id="table-35" data-phone=1></td>
+                        <td id="table-36" data-phone=1></td>
+                        <td id="table-37" data-phone=1></td>
                     </tr>
                     <!-- 同谐  -->
                     <tr>
@@ -138,9 +133,9 @@
                         <td id="table-42"></td>
                         <td id="table-43"></td>
                         <td id="table-44"></td>
-                        <td id="table-45" data-phone="0"></td>
-                        <td id="table-46" data-phone="0"></td>
-                        <td id="table-47" data-phone="0"></td>
+                        <td id="table-45" data-phone=1></td>
+                        <td id="table-46" data-phone=1></td>
+                        <td id="table-47" data-phone=1></td>
                     </tr>
                     <!-- 虚无  -->
                     <tr>
@@ -151,9 +146,9 @@
                         <td id="table-52"></td>
                         <td id="table-53"></td>
                         <td id="table-54"></td>
-                        <td id="table-55" data-phone="0"></td>
-                        <td id="table-56" data-phone="0"></td>
-                        <td id="table-57" data-phone="0"></td>
+                        <td id="table-55" data-phone=1></td>
+                        <td id="table-56" data-phone=1></td>
+                        <td id="table-57" data-phone=1></td>
                     </tr>
                     <!-- 存护  -->
                     <tr>
@@ -164,9 +159,9 @@
                         <td id="table-62"></td>
                         <td id="table-63"></td>
                         <td id="table-64"></td>
-                        <td id="table-65" data-phone="0"></td>
-                        <td id="table-66" data-phone="0"></td>
-                        <td id="table-67" data-phone="0"></td>
+                        <td id="table-65" data-phone=1></td>
+                        <td id="table-66" data-phone=1></td>
+                        <td id="table-67" data-phone=1></td>
                     </tr>
                     <!-- 丰饶  -->
                     <tr>
@@ -177,9 +172,9 @@
                         <td id="table-72"></td>
                         <td id="table-73"></td>
                         <td id="table-74"></td>
-                        <td id="table-75" data-phone="0"></td>
-                        <td id="table-76" data-phone="0"></td>
-                        <td id="table-77" data-phone="0"></td>
+                        <td id="table-75" data-phone=1></td>
+                        <td id="table-76" data-phone=1></td>
+                        <td id="table-77" data-phone=1></td>
                     </tr>
                     <!-- 记忆 -->
                     <tr>
@@ -190,9 +185,9 @@
                         <td id="table-82"></td>
                         <td id="table-83"></td>
                         <td id="table-84"></td>
-                        <td id="table-85" data-phone="0"></td>
-                        <td id="table-86" data-phone="0"></td>
-                        <td id="table-87" data-phone="0"></td>
+                        <td id="table-85" data-phone=1></td>
+                        <td id="table-86" data-phone=1></td>
+                        <td id="table-87" data-phone=1></td>
                     </tr>
                 </tbody>
             </table>
@@ -374,7 +369,26 @@
             </table>
         </div>
     </div>
-    <script src="js/index.js"></script>
+    <script type="module">
+        (async () => {
+            const initCode = await serverInit('../index.js');
+            if (initCode !== 0) {
+                Timmer.Stop('init', '服务器初始化')
+                const serverDiv = document.getElementById('server');
+                const errorDiv = document.getElementById('jserror')
+                errorDiv.innerText = `Script fault [code ${initCode}]: Script initialization error!`;
+                errorDiv.style.color = "red";
+                errorDiv.style.fontWeight = 800;
+                serverInfo.map((info, index) => {
+                    const option = document.createElement('option');
+                    option.innerText = info;
+                    option.value = index;
+                    serverDiv.appendChild(option);
+                })
+                console.log(`%cScript fault [code ${initCode}]: Script initialization error!`, 'color:red')
+            }
+        })();
+    </script>
 </body>
 
 </html>
