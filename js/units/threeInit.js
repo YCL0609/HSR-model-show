@@ -15,13 +15,13 @@ const clock = new THREE.Clock();
 const gui = new GUI();
 
 // 初始化
-timmer.Start('threeinit');
+Timmer.Start('threeinit');
 const initdata = await UI.Init();
 const name = initdata[0];
 const vmd = initdata[1];
 const weapon = initdata[2];
 const islocal = initdata[3];
-timmer.Stop('threeinit', 'three初始化');
+Timmer.Stop('threeinit', 'three初始化');
 
 // 主函数
 try {
@@ -36,7 +36,7 @@ try {
 
 // 场景配置
 async function init() {
-  timmer.Start('screeninit')
+  Timmer.Start('screeninit')
   UI.Progress.main(3);
   const container = document.createElement('div');
   document.body.appendChild(container);
@@ -79,19 +79,19 @@ async function init() {
   // 帧数显示和其他
   stats = new Stats();
   container.appendChild(stats.dom);
-  timmer.Stop('screeninit', '画布初始化');
+  Timmer.Stop('screeninit', '画布初始化');
   UI.Progress.main(4);
   // 天空盒
-  timmer.Start('skybox');
+  Timmer.Start('skybox');
   const skybox = new THREE.CubeTextureLoader();
   skybox.setPath(`${serverRoot}/img/skybox/`);
   skybox.load(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg',], (mesh) => {
     scene.background = mesh;
     UI.Finish.Skybox();
-    timmer.Stop('skybox', '天空盒');
+    Timmer.Stop('skybox', '天空盒');
   }, null, () => { UI.Error(3); UI.Finish.Skybox(true) })
   // 场景模型
-  timmer.Start('bgmodel');
+  Timmer.Start('bgmodel');
   loader.load(
     `${serverRoot}/models/background/index.pmx`,
     (mesh) => {
@@ -107,7 +107,7 @@ async function init() {
         mesh.position.z = modelParams.z;
       });
       UI.Finish.Model('text2', 'texte2', 'background');
-      timmer.Stop('bgmodel', '背景模型')
+      Timmer.Stop('bgmodel', '背景模型')
     },
     (xhr) => { UI.Progress.Model(2, xhr) },
     (err) => { UI.Error(4, err) }
@@ -132,7 +132,7 @@ async function init() {
     vmdurl = `${serverRoot}/vmd/${vmd}/index.vmd`;
     mp3url = `${serverRoot}/vmd/${vmd}/index.mp3`;
   }
-  timmer.Start('mainmodel');
+  Timmer.Start('mainmodel');
   loader.loadWithAnimation(
     `${serverRoot}/models/${name}/index.pmx`,
     vmdurl,
@@ -151,7 +151,7 @@ async function init() {
       });
       UI.Finish.Model('text1', 'texte1', 'module')
       if (vmd !== 0) { Audioload(mmd) };
-      timmer.Stop('mainmodel', '人物模型')
+      Timmer.Stop('mainmodel', '人物模型')
     },
     (xhr) => {
       UI.Progress.Model(1, xhr, text, texten);
@@ -193,7 +193,7 @@ function Weapons(loader) {
     z = [0, 0, 0, -20, -20];
   }
   for (let i = 1; i <= weapon; i++) {
-    timmer.Start(`weapon${i}`);
+    Timmer.Start(`weapon${i}`);
     UI.Start(`weapon${i}`, `-w${i}`, `武器模型${i}:`, `Weapon model${i}:`);
     loader.load(
       `${serverRoot}/models/${name}/${i}.pmx`,
@@ -212,7 +212,7 @@ function Weapons(loader) {
         });
         scene.add(mesh);
         UI.Finish.Model(`text-w${i}`, `texte-w${i}`, `weapon${i}`);
-        timmer.Stop(`weapon${i}`, `武器模型${i}`)
+        Timmer.Stop(`weapon${i}`, `武器模型${i}`)
       },
       (xhr) => {
         UI.Progress.Model(`-w${i}`, xhr);
@@ -224,7 +224,7 @@ function Weapons(loader) {
 }
 
 function Audioload(mmd) {
-  timmer.Start('music');
+  Timmer.Start('music');
   UI.Start('music', 4, '音乐文件:', 'Music file:');
   // 监听
   const audioListener = new THREE.AudioListener();
@@ -241,7 +241,7 @@ function Audioload(mmd) {
       oceanAmbientSound.setLoop(true);//设置音频循环
       document.getElementById('text4').innerText = "加载完成.";
       document.getElementById('music').style.display = "none";
-      timmer.Stop('music', '音频文件');
+      Timmer.Stop('music', '音频文件');
       setTimeout(() => {
         UI.Finish.MMD();
         let ok = document.getElementById('start');

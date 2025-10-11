@@ -1,12 +1,42 @@
 const server = {
-    list: ['//server0.ycl.cool', '//server1.ycl.cool'],
-    info: ['主服务器(Main Server)', '备用服务器(Backup Server)']
+    list: ['//server0.ycl.cool/srroot', '//server1.ycl.cool/srroot'],
+    info: ['主服务器(Main Server)', '备用服务器(Backup Server)'],
+    debug: {
+        http: "//localhost:8081",
+        https: "//localhost/sr_db"
+    }
 }
 
-const langList = ['zh', 'en', 'ko', 'jp'];
+const langList = ['zh', 'en', 'ko', 'jp']; //
 
 const nopic_other = [12, 17] // 其他无人物介绍立绘
 const nopic_Main = [4, 45, 53, 65] // 开拓者
 const nopic = nopic_Main.concat(nopic_other); // 无介绍立绘id
 
-export { server, langList, nopic, nopic_other, nopic_Main };
+const ProgressInfo = {
+    Main: [
+        '加载依赖文件...',
+        '初始化加载器...',
+        '等待响应...',
+        '加载完成, 请等待材质下载.'
+    ]
+}
+
+const ProgressInfo_English = {
+    Main: [
+        'Loading dependency files...',
+        'Initialize the loader...',
+        'Waiting for a response...',
+        'Loading finish, please wait for the material download.'
+    ]
+}
+
+export {
+    server,
+    langList,
+    nopic,
+    nopic_other,
+    nopic_Main,
+    ProgressInfo,
+    ProgressInfo_English
+};

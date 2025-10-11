@@ -78,28 +78,6 @@ export function Start(divid, id, cn, en) { // 添加进度条UI
 }
 
 export const Progress = {
-    // 主进度条更新
-    main: (num) => {
-        let info, infoe;
-        switch (num) {
-            case 3:
-                info = "初始化加载器...";
-                infoe = "Initialize the loader...";
-                break;
-            case 4:
-                info = "等待响应...";
-                infoe = "Waiting for a response...";
-                break;
-            default:
-                info = "";
-                infoe = "";
-                break;
-        }
-        document.getElementById('text0').innerText = `(${num}/5)${info}`;
-        document.getElementById('texte0').innerText = `(${num}/5)${infoe}`;
-        document.getElementById('progress0').style.width = `${num * 20}%`;
-    },
-
     // 模型加载进度条
     Model: (id, xhr, text = '', texten = '') => {
         document.getElementById(`text${id}`).innerText = text + "(" + (xhr.loaded / 1024).toFixed(0) + " KB/" + (xhr.total / 1024).toFixed(0) + " KB)";

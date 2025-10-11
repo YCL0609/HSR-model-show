@@ -33,16 +33,6 @@ body {
 	margin: 0 auto;
 }
 
-#three {
-	top: 10px;
-	position: absolute;
-	width: 100%;
-	box-sizing: border-box;
-	text-align: center;
-	z-index: 10002;
-	transition: 1.5s;
-}
-
 #VMDList {
 	position: absolute;
 	text-align: center;
@@ -56,16 +46,6 @@ body {
 
 #VMDList a {
 	color: aqua;
-}
-
-#error {
-	color: #000;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	position: absolute;
-	width: 100%;
-	z-index: 10010
 }
 
 #useVMD {
@@ -131,4 +111,10 @@ body {
 	border-radius: 5px;
 	word-wrap: break-word;
 	min-width: 100px;
+}
+
+
+.banner {
+	width: 100%;
+	text-align: center;
 }

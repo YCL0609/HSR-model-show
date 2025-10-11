@@ -9,16 +9,10 @@
 	<link href="favicon.ico" rel="shortcut icon">
 	<script>
 		const page_version = "3.0.0.0324"; 
-		// Webkit内核判断
-		if (/WebKit/i.test(navigator.userAgent) && !/(Chrome|android)/i.test(navigator.userAgent)) {
-			alert('由于Webkit内核对于WebGL兼容性有限, 页面可能出现未知渲染问题。\nDue to the limited compatibility of the Webkit kernel for WebGL, pages may have unknown rendering issues.')
-		}
-
-		// function log(...obj) { console.log(...obj) }
 	</script>
+	<script src="./outsite/dist/function.bundle.min.js" type="module"></script>
+	<script src="./js/lib/serverInit.js" type="module"></script>
 	<!-- <script src="js/baidu.js"></script> -->
-	<script src="outside/function.js"></script>
-	<!-- <script src="//api.ycl.cool/js/function.js"></script> -->
 </head>
 
 <body>
@@ -27,9 +21,9 @@
 		<div id="info-main">
 			<div id="main">
 				<a>主进度:</a>
-				<a id="text0" class="text">(1/5)初始化服务器连接...</a><br>
+				<a id="text0" class="text"></a><br>
 				<a>Main process:</a>
-				<a id="texte0" class="text">(1/5)Initialize the server connection...</a>
+				<a id="texte0" class="text"></a>
 				<div class="progress">
 					<div id="progress0" class="progress-inside" style="width: 0%"></div>
 				</div>
@@ -44,12 +38,8 @@
 						<label for="server">服务器(Server): </label>
 						<select id="server">
 							<option value="-1" style="display: none" selected></option>
-							<option value="0">国际服务器0 - Globe server #0</option>
-							<option value="1">国际服务器1 - Globe server #1</option>
-							<option value="9">国内服务器 - China server #CN</option>
 						</select>
-						<button onclick="userServerChoose()">OK</button>
-						<a id="test-result"></a>
+						<button id="userSelent">OK</button>
 					</div>
 				</div>
 			</div>
@@ -123,10 +113,35 @@
 			<button onclick="VMD_process('load')">OK</button>
 		</div>
 	</div>
-	<!-- three.js -->
-	<b id="three">此页使用<a href="https://threejs.org/" style="color: aqua;">three.js</a>作为webgl渲染引擎<br></b>
-	<div id="error"></div>
-	<script src="js/3d.js"></script>
+	<!-- banner -->
+	<div class="banner">
+		<b id="three">此页使用<a href="https://threejs.org/" style="color: aqua;">three.js</a>作为webgl渲染引擎<br></b>
+		<div id="error"></div>
+	</div>
+	<script type="module">
+		import { serverInit, userChooseServer } from './js/lib/serverInit.js';
+		const userSelent = document.getElementById('userSelent')
+		userSelent.addEventListener('click', () => userChooseServer())
+
+		serverInit('../3d.js')
+			.then(initCode => {
+				if (initCode !== 0) {
+					const serverDiv = document.getElementById('server');
+					const errorDiv = document.getElementById('jserror')
+					errorDiv.innerText = `Script fault (code ${initCode}): Script initialization error!`;
+					errorDiv.style.backgroundColor = "#000"
+					errorDiv.style.fontWeight = 800;
+					errorDiv.style.color = "red";
+					serverInfo.map((info, index) => {
+						const option = document.createElement('option');
+						option.innerText = info;
+						option.value = index;
+						serverDiv.appendChild(option);
+					})
+					console.log(`%cScript fault (code ${initCode}): Script initialization error!`, 'color:red')
+				}
+			})
+	</script>
 </body>
 
 </html>

@@ -10,8 +10,8 @@
     <title>《崩坏:星穹铁道》角色立绘和3D模型展示</title>
     <link href="favicon.ico" rel="shortcut icon">
     <link rel="stylesheet" type="text/css" href="css/index.css">
-    <script src="./js/lib/serverInit.js" type="module"></script>
     <script src="./outsite/dist/function.bundle.min.js" type="module"></script>
+    <!-- <script src="js/baidu.js"></script> -->
 </head>
 
 <body>
@@ -57,7 +57,7 @@
                 <select id="server">
                     <option value="-1" style="display: none" selected></option>
                 </select>
-                <button onclick="userChooseServer()">OK</button>
+                <button id="userSelent">OK</button>
             </div>
         </div>
         <div id="form">
@@ -364,30 +364,44 @@
                         </td>
                     </tr>
                     <tr class="closebtn">
-                        <td colspan="5" onclick="ShowPicture(-1)">关闭 (Close)</td>
+                        <td colspan="5" onclick="closeOverlay()">关闭 (Close)</td>
+                        <script>
+                            function closeOverlay() {
+                                document.getElementsByClassName('overlay')[0].style.display = 'none';
+                                document.getElementById('btn1').style.display = 'none';
+                                document.getElementById('nomodel').style.display = 'none';
+                                document.getElementById('img0').dataset.imgdata = 'no';
+                                document.getElementById('img1').style.display = 'none';
+                            }
+                        </script>
                     </tr>
             </table>
         </div>
     </div>
     <script type="module">
-        (async () => {
-            const initCode = await serverInit('../index.js');
-            if (initCode !== 0) {
-                Timmer.Stop('init', '服务器初始化')
-                const serverDiv = document.getElementById('server');
-                const errorDiv = document.getElementById('jserror')
-                errorDiv.innerText = `Script fault [code ${initCode}]: Script initialization error!`;
-                errorDiv.style.color = "red";
-                errorDiv.style.fontWeight = 800;
-                serverInfo.map((info, index) => {
-                    const option = document.createElement('option');
-                    option.innerText = info;
-                    option.value = index;
-                    serverDiv.appendChild(option);
-                })
-                console.log(`%cScript fault [code ${initCode}]: Script initialization error!`, 'color:red')
-            }
-        })();
+        import { serverInit, userChooseServer } from "./js/lib/serverInit.js";
+        import { server } from "./js/lib/config.js"
+        const userSelent = document.getElementById('userSelent')
+        userSelent.addEventListener('click', () => userChooseServer())
+
+        serverInit('../index.js')
+            .then(initCode => {
+                if (initCode !== 0) {
+                    const serverDiv = document.getElementById('server');
+                    const errorDiv = document.getElementById('jserror')
+                    errorDiv.innerText = `Script fault (code ${initCode}): Script initialization error!`;
+                    errorDiv.style.backgroundColor = "#000"
+                    errorDiv.style.fontWeight = 800;
+                    errorDiv.style.color = "red";
+                    server.info.map((info, index) => {
+                        const option = document.createElement('option');
+                        option.innerText = info;
+                        option.value = index;
+                        serverDiv.appendChild(option);
+                    })
+                    console.log(`%cScript fault (code ${initCode}): Script initialization error!`, 'color:red')
+                }
+            })
     </script>
 </body>
 
