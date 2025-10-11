@@ -1,15 +1,23 @@
-import { Timmer, serverRoot } from "../js/lib/serverInit.js";
+import { Timmer, serverRoot } from "../js/libs/serverInit.js";
 
 export function init() {
     Timmer.Start('load')
     loadExternalResource(`${serverRoot}/js/three.js/libs/ammo.wasm.js`, 'js')
-        .then(() => { // 加载three.js文件
-            Timmer.Stop('load', '依赖文件加载');
-            loadExternalResource(`units/threeInit.js`, 'js', true) // three.js控制文件
+        .then(async () => { // 加载three.js文件
+            await import('./units/threeInit.js');
         })
-        .catch(() => {
-            // 错误处理
-        })
+        .catch(err => InError(1, err.stack, true))
+}
+
+export function InError(errid = 0, errtxt, isThrow = false) {
+    const errName = [
+        '未知错误',
+        '依赖文件加载错误'
+    ];
+    console.log(`%c${errName[errid]}: ${errtxt}`, 'color: orange');
+    const errorDiv = document.getElementById('error');
+    errorDiv.innerText = `Script error (Code ${errid}): ${errName[errid]}\n${errtxt}`;
+    if (isThrow) { throw new Error(errName[errid]) }
 }
 
 // VMD文件处理

@@ -1,5 +1,5 @@
-import { Debug, Timmer, serverRoot } from "../lib/serverInit.js";
-import { langList } from "../lib/config.js";
+import { Debug, Timmer, serverRoot } from "../libs/serverInit.js";
+import { langList } from "../libs/config.js";
 import { WriteToTable } from "./WriteToTable.js";
 import { InError } from "../index.js";
 

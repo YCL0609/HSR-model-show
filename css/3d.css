@@ -101,7 +101,7 @@ body {
 	height: 100%;
 	background-color: greenyellow;
 }
- 
+
 .poop {
 	margin-top: 10px;
 	padding-left: 10px;
@@ -113,8 +113,9 @@ body {
 	min-width: 100px;
 }
 
-
 .banner {
 	width: 100%;
+	z-index: 99999;
+	position: fixed;
 	text-align: center;
 }

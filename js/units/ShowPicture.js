@@ -1,5 +1,5 @@
-import { nopic_Main, nopic_other } from "../lib/config.js";
-import { Timmer, serverRoot } from "../lib/serverInit.js";
+import { nopic_Main, nopic_other } from "../libs/config.js";
+import { Timmer, serverRoot } from "../libs/serverInit.js";
 import { InError } from "../index.js";
 import { langCfg, data } from "./ChangeLang.js";
 

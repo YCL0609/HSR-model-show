@@ -1,5 +1,5 @@
-import { nopic } from "../lib/config.js";
-import { Timmer } from "../lib/serverInit.js";
+import { nopic } from "../libs/config.js";
+import { Timmer } from "../libs/serverInit.js";
 import { ShowPicture } from "./ShowPicture.js";
 import { InError } from "../index.js";
 

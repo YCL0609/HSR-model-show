@@ -1,6 +1,6 @@
-import * as UI from 'WebUI';
+import * as UI from '../UI.js';
 import * as THREE from 'three';
-import Stats from 'three/libs/stats.module.js';
+// import Stats from 'three/libs/stats.module.js';
 import { OrbitControls } from 'three/controls/OrbitControls.js';
 import { OutlineEffect } from 'three/effects/OutlineEffect.js';
 import { MMDLoader } from 'three/loaders/MMDLoader.js';

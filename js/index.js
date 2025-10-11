@@ -1,5 +1,5 @@
-import { langList } from "./lib/config.js";
-import { Timmer } from "./lib/serverInit.js";
+import { langList } from "./libs/config.js";
+import { Timmer } from "./libs/serverInit.js";
 import { ChangeLang } from "./units/ChangeLang.js";
 
 export function init() {

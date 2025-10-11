@@ -1,4 +1,4 @@
-import { ProgressInfo, ProgressInfo_English } from "../lib/config.js";
+import { ProgressInfo, ProgressInfo_English } from "../libs/config.js";
 const TextMain = document.getElementById('text0');
 const TextMainEnglish = document.getElementById('texte0');
 const ProgressBar = document.getElementById('progress0')

@@ -22,8 +22,8 @@ async function serverInit(mainfile) {
   // 动态创建Import Map
   const importMap = {
     imports: {
-      "three": `${serverRoot}/js/lib/three.js/three.module.min.js`,
-      "three/": `${serverRoot}/js/lib/three.js/`
+      "three": `${serverRoot}/js/libs/three.js/three.module.min.js`,
+      "three/": `${serverRoot}/js/libs/three.js/`
     }
   };
   const script = document.createElement('script');

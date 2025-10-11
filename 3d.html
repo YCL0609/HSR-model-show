@@ -11,7 +11,7 @@
 		const page_version = "3.0.0.0324"; 
 	</script>
 	<script src="./outsite/dist/function.bundle.min.js" type="module"></script>
-	<script src="./js/lib/serverInit.js" type="module"></script>
+	<script src="./js/libs/serverInit.js" type="module"></script>
 	<!-- <script src="js/baidu.js"></script> -->
 </head>
 
@@ -116,10 +116,10 @@
 	<!-- banner -->
 	<div class="banner">
 		<b id="three">此页使用<a href="https://threejs.org/" style="color: aqua;">three.js</a>作为webgl渲染引擎<br></b>
-		<div id="error"></div>
+		<div id="error" style="color: red;font-weight: bolder"></div>
 	</div>
 	<script type="module">
-		import { serverInit, userChooseServer } from './js/lib/serverInit.js';
+		import { serverInit, userChooseServer } from './js/libs/serverInit.js';
 		const userSelent = document.getElementById('userSelent')
 		userSelent.addEventListener('click', () => userChooseServer())
 
@@ -127,7 +127,7 @@
 			.then(initCode => {
 				if (initCode !== 0) {
 					const serverDiv = document.getElementById('server');
-					const errorDiv = document.getElementById('jserror')
+					const errorDiv = document.getElementById('error')
 					errorDiv.innerText = `Script fault (code ${initCode}): Script initialization error!`;
 					errorDiv.style.backgroundColor = "#000"
 					errorDiv.style.fontWeight = 800;
