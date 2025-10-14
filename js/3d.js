@@ -2,7 +2,7 @@ import { Timmer, serverRoot } from "../js/libs/serverInit.js";
 
 export function init() {
     Timmer.Start('load')
-    loadExternalResource(`${serverRoot}/js/three.js/libs/ammo.wasm.js`, 'js')
+    loadExternalResource(`${serverRoot}/js/libs/three.js/libs/ammo.wasm.js`, 'js')
         .then(async () => { // 加载three.js文件
             await import('./units/threeInit.js');
         })

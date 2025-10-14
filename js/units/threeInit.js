@@ -1,11 +1,11 @@
 import * as UI from '../UI.js';
 import * as THREE from 'three';
-// import Stats from 'three/libs/stats.module.js';
+import { MMDAnimationHelper, MMDLoader } from '../libs/index.js'
+import Stats from 'three/libs/stats.module.js';
 import { OrbitControls } from 'three/controls/OrbitControls.js';
 import { OutlineEffect } from 'three/effects/OutlineEffect.js';
-import { MMDLoader } from 'three/loaders/MMDLoader.js';
-import { MMDAnimationHelper } from 'three/animation/MMDAnimationHelper.js';
-import { GUI } from 'three/lil-gui.module.min.js';
+import { GUI } from 'three/lil-gui.esm.min.js';
+import { Timmer } from '../libs/serverInit.js';
 console.log('3D page version: ' + page_version + '\nthree.js version: ' + THREE.REVISION);
 
 let stats, vmdurl, mp3url;

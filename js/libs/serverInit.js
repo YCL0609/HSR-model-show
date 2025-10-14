@@ -23,7 +23,8 @@ async function serverInit(mainfile) {
   const importMap = {
     imports: {
       "three": `${serverRoot}/js/libs/three.js/three.module.min.js`,
-      "three/": `${serverRoot}/js/libs/three.js/`
+      "three/": `${serverRoot}/js/libs/three.js/`,
+      "mmd-parser/": `${serverRoot}/js/libs/mmd-parser/`
     }
   };
   const script = document.createElement('script');
