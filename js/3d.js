@@ -1,10 +1,15 @@
 import { Timmer, serverRoot } from "../js/libs/serverInit.js";
+import { Progress } from "./units/UI.js";
 
 export function init() {
-    Timmer.Start('load')
+    Timmer.Start('load');
+    Progress.Main(0);
     loadExternalResource(`${serverRoot}/js/libs/three.js/libs/ammo.wasm.js`, 'js')
         .then(async () => { // 加载three.js文件
-            await import('./units/threeInit.js');
+            try {
+                Progress.Main(1)
+                import('./units/threeInit.js')
+            } catch (_) { return }// 防止报错传递到这里
         })
         .catch(err => InError(1, err.stack, true))
 }
@@ -12,7 +17,8 @@ export function init() {
 export function InError(errid = 0, errtxt, isThrow = false) {
     const errName = [
         '未知错误',
-        '依赖文件加载错误'
+        '依赖文件加载错误',
+        '页面参数错误'
     ];
     console.log(`%c${errName[errid]}: ${errtxt}`, 'color: orange');
     const errorDiv = document.getElementById('error');

@@ -23,8 +23,8 @@ async function serverInit(mainfile) {
   const importMap = {
     imports: {
       "three": `${serverRoot}/js/libs/three.js/three.module.min.js`,
-      "three/": `${serverRoot}/js/libs/three.js/`,
-      "mmd-parser/": `${serverRoot}/js/libs/mmd-parser/`
+      "lil-gui": `${serverRoot}/js/libs/lil-gui.esm.min.js`,
+      "libs/": `${serverRoot}/js/libs/`
     }
   };
   const script = document.createElement('script');
@@ -37,8 +37,9 @@ async function serverInit(mainfile) {
     const mainModule = await import(mainfile)
     if (typeof mainModule.init !== 'function') return 3;
     Timmer.Stop('serverInit', '服务器初始化');
-    mainModule.init();
-    return 0
+    try {
+      mainModule.init();
+    } catch (_) { return } // 防止报错传递到这里
   } catch (err) {
     console.error(err.stack);
     return 4;

@@ -4,66 +4,7 @@ const other = getUrlParams('other'); // 模型数据
 let cacheData = localStorage.getItem('maindata');
 const dataname = other ? "data2" : "data";
 
-export async function Init() {
-    try {
-        Progress.main(3);
-        // 人物ID相关
-        id = getUrlParams('id');
-        const idnum = parseInt(id);
-        if (isNaN(idnum) || idnum < 1) Error(1, 'The parameter is invalid', ":参数'id'不是数字或在可接受范围外");
-        // vmd加载相关
-        islocal = getUrlParams('localvmd');
-        if (islocal === null || islocal === undefined) {
-            islocal = false;
-            vmd = getUrlParams('vmd');
-            if (vmd === null || vmd === undefined) vmd = 0
-        } else { vmd = -1 }
-        if (isNaN(parseInt(vmd)) || vmd < -1 || vmd > 3) Error(2, 'The parameter is invalid', ":参数'vmd'不是数字或在可接受范围外");
-        // 获取人物数据
-        try {
-            // 检查本地缓存版本
-            let serverVer;
-            const response = await fetch(`${serverRoot}/lang/version.txt`);
-            if (response.ok) serverVer = await response.text();
-            isCacheverok = serverVer && localStorage.getItem('lang_version') == serverVer;
-            if (!cacheData && !isCacheverok) {
-                Debug ? console.log("主缓存: %c使用网络资源", "color:#ff0") : null;
-                // 更新数据
-                const response2 = await fetch(`${serverRoot}/${dataname}.json`);
-                if (!response2.ok) Error(0, `HTTP ${response2.status} ${response2.statusText}`, `:${dataname}.json文件获取失败`);
-                data = await response2.json();
-                // 缓存数据
-                let dataB;
-                const datanameB = other ? "data" : "data2";
-                if (cacheData) {
-                    try {
-                        const parsedCacheData = JSON.parse(cacheData);
-                        dataB = parsedCacheData[datanameB] ?? null;
-                    } catch (_) { dataB = null }
-                } else { dataB = null }
-                localStorage.setItem('maindata', JSON.stringify({ [dataname]: data, [datanameB]: dataB }));
-                localStorage.setItem('lang_version', serverVer);
-            } else {
-                Debug ? console.log("主缓存: %c使用缓存资源", "color:#0f0") : null;
-                data = JSON.parse(cacheData)[dataname];
-            }
-        } catch (error) { Error(2, error.stack, ':本地缓存版本检查失败') }
-        // 获取文件夹名
-        const roledata = data[id];
-        let name = other ? roledata['folder'] : id;
-        if (roledata['special']) name = roledata['folder'] + (getUrlParams(roledata['special']) ? `_${roledata['special']}` : '');
-        // ID合规性检查2
-        if (idnum > data[0]['total']) Error(1, 'The parameter is invalid', ":参数'id'不是数字或在可接受范围外");
-        // UI相关
-        document.getElementById('jsload').style.display = "none";
-        document.getElementById('skybox').style.display = null;
-        document.getElementById('module').style = null;
-        document.getElementById('background').style = null;
-        return [name, vmd, roledata['weapons'], islocal]
-    } catch (e) {
-        Error(0, e)
-    }
-}
+
 
 export function Start(divid, id, cn, en) { // 添加进度条UI
     let info = document.createElement('div');
@@ -79,11 +20,7 @@ export function Start(divid, id, cn, en) { // 添加进度条UI
 
 export const Progress = {
     // 模型加载进度条
-    Model: (id, xhr, text = '', texten = '') => {
-        document.getElementById(`text${id}`).innerText = text + "(" + (xhr.loaded / 1024).toFixed(0) + " KB/" + (xhr.total / 1024).toFixed(0) + " KB)";
-        document.getElementById(`texte${id}`).innerText = texten + "(" + (xhr.loaded / 1024).toFixed(0) + " KB/" + (xhr.total / 1024).toFixed(0) + " KB)";
-        document.getElementById(`progress${id}`).style.width = (xhr.loaded / xhr.total * 100) + "%";
-    }
+
 }
 
 export const Finish = {

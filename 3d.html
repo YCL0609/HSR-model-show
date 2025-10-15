@@ -12,7 +12,6 @@
 	</script>
 	<script src="./outsite/dist/function.bundle.min.js" type="module"></script>
 	<script src="./js/libs/serverInit.js" type="module"></script>
-	<!-- <script  src="./js/libs/index.js" type="module"></script> -->
 	<!-- <script src="js/baidu.js"></script> -->
 </head>
 
@@ -121,19 +120,20 @@
 	</div>
 	<script type="module">
 		import { serverInit, userChooseServer } from './js/libs/serverInit.js';
+		import { server } from './js/libs/config.js';
 		const userSelent = document.getElementById('userSelent')
 		userSelent.addEventListener('click', () => userChooseServer())
 
 		serverInit('../3d.js')
 			.then(initCode => {
-				if (initCode !== 0) {
+				if (initCode !== undefined) {
 					const serverDiv = document.getElementById('server');
 					const errorDiv = document.getElementById('error')
 					errorDiv.innerText = `Script fault (code ${initCode}): Script initialization error!`;
 					errorDiv.style.backgroundColor = "#000"
 					errorDiv.style.fontWeight = 800;
 					errorDiv.style.color = "red";
-					serverInfo.map((info, index) => {
+					server.info.map((info, index) => {
 						const option = document.createElement('option');
 						option.innerText = info;
 						option.value = index;

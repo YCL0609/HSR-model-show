@@ -1,26 +1,23 @@
-import * as UI from '../UI.js';
+import { GUI } from 'lil-gui';
+import * as UI from './UI.js';
 import * as THREE from 'three';
-import { MMDAnimationHelper, MMDLoader } from '../libs/index.js'
-import Stats from 'three/libs/stats.module.js';
-import { OrbitControls } from 'three/controls/OrbitControls.js';
-import { OutlineEffect } from 'three/effects/OutlineEffect.js';
-import { GUI } from 'three/lil-gui.esm.min.js';
 import { Timmer } from '../libs/serverInit.js';
+import { serverRoot } from '../libs/serverInit.js';
+import Stats from 'libs/three.js/libs/stats.module.js';
+import { MMDAnimationHelper, MMDLoader } from 'libs/three-mmd.js'
+import { OutlineEffect } from 'libs/three.js/effects/OutlineEffect.js';
+import { OrbitControls } from 'libs/three.js/controls/OrbitControls.js';
 console.log('3D page version: ' + page_version + '\nthree.js version: ' + THREE.REVISION);
 
 let stats, vmdurl, mp3url;
 let helper, mesh;
 let camera, scene, renderer, effect;
 const clock = new THREE.Clock();
-const gui = new GUI();
+const lilgui = new GUI();
 
 // 初始化
 Timmer.Start('threeinit');
-const initdata = await UI.Init();
-const name = initdata[0];
-const vmd = initdata[1];
-const weapon = initdata[2];
-const islocal = initdata[3];
+await UI.Init();
 Timmer.Stop('threeinit', 'three初始化');
 
 // 主函数
@@ -37,7 +34,6 @@ try {
 // 场景配置
 async function init() {
   Timmer.Start('screeninit')
-  UI.Progress.main(3);
   const container = document.createElement('div');
   document.body.appendChild(container);
   // 相机
@@ -57,7 +53,7 @@ async function init() {
   Light2.castShadow = true;
   scene.add(Light1);
   scene.add(Light2);
-  const lightFolder = gui.addFolder('光照');
+  const lightFolder = lilgui.addFolder('光照');
   const lightParams = { color: '0xf4e7e1', intensity: 1 }
   lightFolder.addColor(lightParams, 'color').onChange(() => {
     Light1.Color.set(lightParams.color);
@@ -80,7 +76,7 @@ async function init() {
   stats = new Stats();
   container.appendChild(stats.dom);
   Timmer.Stop('screeninit', '画布初始化');
-  UI.Progress.main(4);
+  UI.Progress.Main(2);
   // 天空盒
   Timmer.Start('skybox');
   const skybox = new THREE.CubeTextureLoader();
@@ -98,7 +94,7 @@ async function init() {
       // 添加到屏幕( X:0 y:-11.7 Z:0)
       mesh.position.y = -11.7;
       scene.add(mesh);
-      const modelFolder = gui.addFolder('场景');
+      const modelFolder = lilgui.addFolder('场景');
       const modelParams = { x: 0, z: 0 }
       modelFolder.add(modelParams, 'x', -500, 500).onChange(() => {
         mesh.position.x = modelParams.x;
@@ -112,9 +108,9 @@ async function init() {
     (xhr) => { UI.Progress.Model(2, xhr) },
     (err) => { UI.Error(4, err) }
   );
-  const text = (vmd == 0) ? '模型文件:' : '模型和动作文件:'
-  const texten = (vmd == 0) ? 'Model Files:' : 'Model and Action Files:'
-  if (islocal) {
+  const text = (UI.vmd == 0) ? '模型文件:' : '模型和动作文件:'
+  const texten = (UI.vmd == 0) ? 'Model Files:' : 'Model and Action Files:'
+  if (UI.vmd === -1) {
     document.getElementById('useVMD').style.display = "";
     document.getElementById('VMDchoose').style.display = "none";
     document.getElementById('localVMD').style.display = "";
@@ -129,19 +125,19 @@ async function init() {
       }, 1500); // 每1500毫秒检查一次
     });
   } else {
-    vmdurl = `${serverRoot}/vmd/${vmd}/index.vmd`;
-    mp3url = `${serverRoot}/vmd/${vmd}/index.mp3`;
+    vmdurl = `${serverRoot}/vmd/${UI.vmd}/index.vmd`;
+    mp3url = `${serverRoot}/vmd/${UI.vmd}/index.mp3`;
   }
   Timmer.Start('mainmodel');
   loader.loadWithAnimation(
-    `${serverRoot}/models/${name}/index.pmx`,
+    `${serverRoot}/models/${UI.name}/index.pmx`,
     vmdurl,
     (mmd) => {
       // 添加到屏幕( X:0 y:-10 Z:0)
       mesh = mmd.mesh;
       mesh.position.y = -10;
       scene.add(mesh);
-      const modelFolder = gui.addFolder('人物');
+      const modelFolder = lilgui.addFolder('人物');
       const modelParams = { x: 0, z: 0 }
       modelFolder.add(modelParams, 'x', -200, 200).onChange(() => {
         mesh.position.x = modelParams.x;
@@ -150,7 +146,7 @@ async function init() {
         mesh.position.z = modelParams.z;
       });
       UI.Finish.Model('text1', 'texte1', 'module')
-      if (vmd !== 0) { Audioload(mmd) };
+      if (UI.vmd !== 0) { Audioload(mmd) };
       Timmer.Stop('mainmodel', '人物模型')
     },
     (xhr) => {
@@ -161,7 +157,7 @@ async function init() {
       UI.Error(5, err)
     }
   );
-  (vmd == 0) ? Weapons(loader) : null;
+  (UI.vmd == 0) ? Weapons(loader) : null;
 
   // 相机
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -188,7 +184,7 @@ function animate() {
 function Weapons(loader) {
   let x = [0, -15, +20, +10, -10, -20, 0, +20];
   let z = [0, 0, 0, -15, -15, -15, -15, -15];
-  if (name == 27) { // 素裳(大赤鸢模型太大)
+  if (UI.name == 27) { // 素裳(大赤鸢模型太大)
     x = [0, -15, +20, +10, -10];
     z = [0, 0, 0, -20, -20];
   }
@@ -196,13 +192,13 @@ function Weapons(loader) {
     Timmer.Start(`weapon${i}`);
     UI.Start(`weapon${i}`, `-w${i}`, `武器模型${i}:`, `Weapon model${i}:`);
     loader.load(
-      `${serverRoot}/models/${name}/${i}.pmx`,
+      `${serverRoot}/models/${UI.name}/${i}.pmx`,
       (mesh) => {
         // 添加到屏幕(X,Y,Z)
         mesh.position.x = x[i];
         mesh.position.y = -7;
         mesh.position.z = z[i];
-        const modelFolder = gui.addFolder(`武器${i}`);
+        const modelFolder = lilgui.addFolder(`武器${i}`);
         const modelParams = { x: x[i], z: z[i] }
         modelFolder.add(modelParams, 'x', -200, 200).onChange(() => {
           mesh.position.x = modelParams.x;

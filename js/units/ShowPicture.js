@@ -1,7 +1,7 @@
 import { nopic_Main, nopic_other } from "../libs/config.js";
 import { Timmer, serverRoot } from "../libs/serverInit.js";
+import { langCfg, data } from "./updateCache.js";
 import { InError } from "../index.js";
-import { langCfg, data } from "./ChangeLang.js";
 
 // 显示立绘
 export function ShowPicture(id) {

@@ -33,10 +33,10 @@
                 </a>
             </div>
             <div class="lang">
-                <button id="zh" onclick="ChangeLang('zh')" data-selent="1">中文</button>
-                <button id="en" onclick="ChangeLang('en')" data-selent="0">English</button>
-                <button id="jp" onclick="ChangeLang('jp')" data-selent="0">日本語</button>
-                <button id="ko" onclick="ChangeLang('ko')" data-selent="0">한국어</button>
+                <button id="zh" data-selent="1">中文</button>
+                <button id="en" data-selent="0">English</button>
+                <button id="ja" data-selent="0">日本語</button>
+                <button id="ko" data-selent="0">한국어</button>
             </div>
             <div class="tip">
                 官方素材的权利归米哈游所有，其他内容的相关权利均归各自所有者享有. 如有侵权请向
@@ -380,13 +380,17 @@
     </div>
     <script type="module">
         import { serverInit, userChooseServer } from "./js/libs/serverInit.js";
-        import { server } from "./js/libs/config.js"
-        const userSelent = document.getElementById('userSelent')
-        userSelent.addEventListener('click', () => userChooseServer())
+        import { ChangeLang } from './js/units/ChangeLang.js'
+        import { server, langList } from "./js/libs/config.js";
+        const userSelent = document.getElementById('userSelent');
+        userSelent.addEventListener('click', () => userChooseServer());
+        langList.forEach((btn) => {
+            document.getElementById(btn).addEventListener('click', () => ChangeLang(btn))
+        })
 
         serverInit('../index.js')
             .then(initCode => {
-                if (initCode !== 0) {
+                if (initCode !== undefined) {
                     const serverDiv = document.getElementById('server');
                     const errorDiv = document.getElementById('jserror')
                     errorDiv.innerText = `Script fault (code ${initCode}): Script initialization error!`;
