@@ -13,6 +13,7 @@ let stats, vmdurl, mp3url;
 let helper, mesh;
 let camera, scene, renderer, effect;
 const clock = new THREE.Clock();
+const loader = new MMDLoader();
 const lilgui = new GUI();
 
 // 初始化
@@ -70,7 +71,6 @@ async function init() {
   container.appendChild(renderer.domElement);
   effect = new OutlineEffect(renderer);
   // 模型加载器
-  const loader = new MMDLoader();
   helper = new MMDAnimationHelper();
   // 帧数显示和其他
   stats = new Stats();
@@ -83,7 +83,7 @@ async function init() {
   skybox.setPath(`${serverRoot}/img/skybox/`);
   skybox.load(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg',], (mesh) => {
     scene.background = mesh;
-    UI.Finish.Skybox();
+    // UI.Finish.Skybox();
     Timmer.Stop('skybox', '天空盒');
   }, null, () => { UI.Error(3); UI.Finish.Skybox(true) })
   // 场景模型
@@ -102,7 +102,7 @@ async function init() {
       modelFolder.add(modelParams, 'z', -500, 500).onChange(() => {
         mesh.position.z = modelParams.z;
       });
-      UI.Finish.Model('text2', 'texte2', 'background');
+      // UI.Finish.Model('text2', 'texte2', 'background');
       Timmer.Stop('bgmodel', '背景模型')
     },
     (xhr) => { UI.Progress.Model(2, xhr) },
@@ -129,35 +129,34 @@ async function init() {
     mp3url = `${serverRoot}/vmd/${UI.vmd}/index.mp3`;
   }
   Timmer.Start('mainmodel');
-  loader.loadWithAnimation(
-    `${serverRoot}/models/${UI.name}/index.pmx`,
-    vmdurl,
-    (mmd) => {
+  loader.load(
+    `${serverRoot}/models/${UI.name}/index.pmx`, //
+    (mmdMesh) => { // ⚠️ 注意：回调参数现在是 SkinnedMesh 对象，而不是旧版返回的 { mesh, animation, ... } 对象
       // 添加到屏幕( X:0 y:-10 Z:0)
-      mesh = mmd.mesh;
-      mesh.position.y = -10;
-      scene.add(mesh);
-      const modelFolder = lilgui.addFolder('人物');
-      const modelParams = { x: 0, z: 0 }
-      modelFolder.add(modelParams, 'x', -200, 200).onChange(() => {
-        mesh.position.x = modelParams.x;
-      });
-      modelFolder.add(modelParams, 'z', -200, 200).onChange(() => {
-        mesh.position.z = modelParams.z;
-      });
-      UI.Finish.Model('text1', 'texte1', 'module')
-      if (UI.vmd !== 0) { Audioload(mmd) };
-      Timmer.Stop('mainmodel', '人物模型')
-    },
-    (xhr) => {
-      UI.Progress.Model(1, xhr, text, texten);
-    },
-    (err) => {
-      console.error(err);
-      UI.Error(5, err)
-    }
-  );
-  (UI.vmd == 0) ? Weapons(loader) : null;
+      mesh = mmdMesh; //
+      mesh.position.y = -10; //
+      scene.add(mesh); //
+      const modelFolder = lilgui.addFolder('人物'); //
+      const modelParams = { x: 0, z: 0 } //
+      modelFolder.add(modelParams, 'x', -200, 200).onChange(() => { //
+        mesh.position.x = modelParams.x; //
+      }); //
+      modelFolder.add(modelParams, 'z', -200, 200).onChange(() => { //
+        mesh.position.z = modelParams.z; //
+      }); //
+      UI.Finish.Model('text1', 'texte1', 'module') //
+      if (UI.vmd !== 0) { Audioload(mmdMesh) }; // ⚠️ 传入 mesh 模型实例
+      Timmer.Stop('mainmodel', '人物模型') //
+    }, //
+    (xhr) => { //
+      UI.Progress.Model(1, xhr, text, texten); //
+    }, //
+    (err) => { //
+      console.error(err); //
+      UI.Error(5, err) //
+    } //
+  ); //
+  // (UI.vmd == 0) ? Weapons(loader) : null;
 
   // 相机
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -219,41 +218,55 @@ function Weapons(loader) {
   }
 }
 
-function Audioload(mmd) {
-  Timmer.Start('music');
-  UI.Start('music', 4, '音乐文件:', 'Music file:');
+function Audioload(mmdMesh) { //
+  Timmer.Start('music'); //
+  UI.Start('music', 4, '音乐文件:', 'Music file:'); //
   // 监听
-  const audioListener = new THREE.AudioListener();
-  camera.add(audioListener);
+  const audioListener = new THREE.AudioListener(); //
+  camera.add(audioListener); //
   // 音频对象
-  const oceanAmbientSound = new THREE.Audio(audioListener);
-  scene.add(oceanAmbientSound);
+  const oceanAmbientSound = new THREE.Audio(audioListener); //
+  scene.add(oceanAmbientSound); //
   // 加载音频资源
-  const loader2 = new THREE.AudioLoader();
-  loader2.load(
-    mp3url,
-    (audioBuffer) => {
-      oceanAmbientSound.setBuffer(audioBuffer);
+  const loader2 = new THREE.AudioLoader(); //
+  loader2.load( //
+    mp3url, //
+    (audioBuffer) => { //
+      oceanAmbientSound.setBuffer(audioBuffer); //
       oceanAmbientSound.setLoop(true);//设置音频循环
-      document.getElementById('text4').innerText = "加载完成.";
-      document.getElementById('music').style.display = "none";
-      Timmer.Stop('music', '音频文件');
-      setTimeout(() => {
-        UI.Finish.MMD();
-        let ok = document.getElementById('start');
-        ok.innerText = "开始(Start)";
-        ok.onclick = () => {
+      document.getElementById('text4').innerText = "加载完成."; //
+      document.getElementById('music').style.display = "none"; //
+      Timmer.Stop('music', '音频文件'); //
+      setTimeout(() => { //
+        UI.Finish.MMD(); //
+        let ok = document.getElementById('start'); //
+        ok.innerText = "开始(Start)"; //
+        ok.onclick = () => { //
           oceanAmbientSound.play();// 播放音频
-          document.getElementById('info').style.display = "none";
-          // 开始动画
-          helper.add(mesh, {
-            animation: mmd.animation,
-            physics: true
-          });
-        }
-      }, 2000);
-    },
-    (xhr) => { UI.Progress.Model(4, xhr); },
-    (err) => { UI.Error(7, err) }
-  );
-}
+          document.getElementById('info').style.display = "none"; //
+          
+          // ⚠️ FIX: 在点击时异步加载 VMD 动画
+          loader.load(
+            vmdurl,
+            (vmdData) => { // 动画数据加载成功
+              // 开始动画
+              helper.add(mmdMesh, {
+                animation: vmdData, // 传入 VMD 数据
+                physics: true
+              });
+            },
+            // progress handler (optional)
+            null, 
+            // error handler
+            (err) => {
+                console.error("VMD 动画文件加载失败:", err);
+                UI.Error(5, err);
+            }
+          );
+        } //
+      }, 2000); //
+    }, //
+    (xhr) => { UI.Progress.Model(4, xhr); }, //
+    (err) => { UI.Error(7, err) } //
+  ); //
+} //F

@@ -11,7 +11,7 @@ async function Init() {
         const idnum = parseInt(id);
         // vmd加载相关
         const islocal = getUrlParams('localvmd');
-        const vmd = islocal ? -1 : (getUrlParams('vmd') ?? -1);
+        vmd = islocal ? -1 : (getUrlParams('vmd') ?? 0  );
         // 缓存处理
         await updateCache('zh');
         // 合规性检查
@@ -20,7 +20,7 @@ async function Init() {
         // 获取文件夹名
         const roledata = data[id];
         const other = getUrlParams('other') ?? false;
-        let name = other ? roledata['folder'] : id;
+        name = other ? roledata['folder'] : id;
         if (roledata['special']) name = roledata['folder'] + (getUrlParams(roledata['special']) ? `_${roledata['special']}` : '');
         // UI相关
         document.getElementById('jsload').style.display = "none";
