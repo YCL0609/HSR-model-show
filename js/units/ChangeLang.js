@@ -28,7 +28,7 @@ export async function ChangeLang(lang) {
     } catch (error) { InError(0, error.stack) }
 
     // 处理缓存（等待完成，保证 data/data2/langCfg 已被填充）
-    await updateCache(lang, langCfg);
+    await updateCache(lang, InError);
 
     // 处理页脚
     document.getElementById('ver0').innerHTML = data[0]['version'];

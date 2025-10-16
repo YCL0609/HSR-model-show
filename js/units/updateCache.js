@@ -1,5 +1,5 @@
 import { Debug, serverRoot } from "../libs/serverInit.js";
-let data, data2;
+let data, data2, isCacheverok, vmddata;
 const langCfg = {
     zh: { data: null, data2: null, text: null },
     jp: { data: null, data2: null, text: null },
@@ -8,7 +8,7 @@ const langCfg = {
     userSelect: null
 };
 
-async function updateCache(lang) {
+async function updateCache(lang, InError) {
     // 获取本地缓存
     const langData = localStorage.getItem(`lang_${lang}`);
     const mainData = localStorage.getItem('maindata');
@@ -25,7 +25,7 @@ async function updateCache(lang) {
 
     // 判断是否需要更新
     const isCacheok = langData && mainData;
-    const isCacheverok = serverVer && localStorage.getItem('lang_version') == serverVer;
+    isCacheverok = serverVer && localStorage.getItem('lang_version') == serverVer;
     if (!isCacheok || !isCacheverok) {
         // 从网络获取数据
         Debug ? console.log('缓存: %c使用网络资源', 'color:#ff0') : null;
@@ -36,7 +36,6 @@ async function updateCache(lang) {
                     const response = await fetch(`${serverRoot}/lang/${lang}/${name}.json`);
                     if (!response.ok) InError(4, `语言文件 ${name}.json 获取失败: HTTP ${response.status} ${response.statusText}`);
                     const json = await response.json();
-                    // 将加载到的语言数据写入调用者传入的 langCfg 对象
                     if (!langCfg[lang]) langCfg[lang] = { data: null, data2: null, text: null };
                     langCfg[lang][name] = json;
                 }),
@@ -61,7 +60,6 @@ async function updateCache(lang) {
             if (serverVer) localStorage.setItem('lang_version', serverVer);
         } catch (error) { InError(3, `网络资源加载失败: ${error.message}`, true) }
     } else { // 使用缓存
-        // 注意：这里的 langCfg 是从调用方传入的对象引用，因此赋值要合并到该对象中
         const parsed = JSON.parse(langData);
         if (!langCfg[lang]) langCfg[lang] = { data: null, data2: null, text: null };
         Object.assign(langCfg[lang], parsed);
@@ -71,4 +69,28 @@ async function updateCache(lang) {
     }
 }
 
-export { data, data2, langCfg, updateCache }
+async function updateVMDCache(InError) {
+    const cacheData = localStorage.getItem('vmddata');
+    if (!cacheData || !isCacheverok) {
+        Debug ? console.log("副缓存: %c使用网络资源", "color:#ff0") : null;
+        // 获取新数据
+        const response = await fetch(`${serverRoot}/vmd/data.json`);
+        if (!response.ok) InError(0, `HTTP ${response.status} ${response.statusText}`, `:${dataname}.json文件获取失败`);
+        const newdata = await response.json();
+        vmddata = newdata[vmd];
+        // 缓存数据
+        localStorage.setItem('vmddata', JSON.stringify(newdata))
+    } else {
+        Debug ? console.log("副缓存: %c使用缓存资源", "color:#0f0") : null;
+        vmddata = JSON.parse(cacheData)[vmd];
+    }
+}
+
+export {
+    data,
+    data2,
+    vmddata,
+    langCfg,
+    updateCache,
+    updateVMDCache
+}

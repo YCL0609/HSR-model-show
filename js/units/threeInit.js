@@ -29,7 +29,7 @@ try {
     animate();
   })
 } catch (e) {
-  InError(2, e)
+  InError(3, e)
 }
 
 // 场景配置
@@ -84,12 +84,9 @@ async function init() {
   skybox.setPath(`${serverRoot}/img/skybox/`);
   skybox.load(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg',], (mesh) => {
     scene.background = mesh;
-    // UI.Finish.Skybox();
+    UI.Finish.Skybox();
     Timmer.Stop('skybox', '天空盒');
-  },
-    () => { debugger },
-    () => { //UI.Error(3); UI.Finish.Skybox(true)
-    })
+  }, null, (err) => UI.Finish.Skybox(true, err.stack))
   // 场景模型
   Timmer.Start('bgmodel');
   loader.load(
@@ -106,11 +103,11 @@ async function init() {
       modelFolder.add(modelParams, 'z', -500, 500).onChange(() => {
         mesh.position.z = modelParams.z;
       });
-      // UI.Finish.Model('text2', 'texte2', 'background');
-      Timmer.Stop('bgmodel', '背景模型')
+      UI.Finish.Model('text2', 'texte2', 'background');
+      Timmer.Stop('bgmodel', '背景模型');
     },
-    (xhr) => { UI.Progress.Model(2, xhr) },
-    (err) => { UI.Error(4, err) }
+    (xhr) => UI.Progress.Model(2, xhr),
+    (err) => InError(5, err.stack)
   );
   const text = (UI.vmd == 0) ? '模型文件:' : '模型和动作文件:'
   const texten = (UI.vmd == 0) ? 'Model Files:' : 'Model and Action Files:'
@@ -149,17 +146,14 @@ async function init() {
       modelFolder.add(modelParams, 'z', -200, 200).onChange(() => {
         mesh.position.z = modelParams.z;
       });
-      // UI.Finish.Model('text1', 'texte1', 'module')
+      UI.Finish.Model('text1', 'texte1', 'module')
       if (UI.vmd !== 0) { Audioload(mmd) };
       Timmer.Stop('mainmodel', '人物模型')
     },
     (xhr) => {
       UI.Progress.Model(1, xhr, text, texten);
     },
-    (err) => {
-      console.error(err);
-      UI.Error(5, err)
-    }
+    (err) => InError(6, err.stack)
   );
   (UI.vmd == 0) ? Weapons(loader) : null;
 
@@ -194,7 +188,16 @@ function Weapons(loader) {
   }
   for (let i = 1; i <= UI.weapon; i++) {
     Timmer.Start(`weapon${i}`);
-    // UI.Start(`weapon${i}`, `-w${i}`, `武器模型${i}:`, `Weapon model${i}:`);
+    // 添加UI
+    let info = document.createElement('div');
+    info.id = `weapon${i}`;
+    info.innerHTML = `
+    <a>武器模型${i}:</a><a id="text-w${i}" class="text">等待启动...</a><br>
+    <a>Weapon model${i}:</a><a id="texte-w${i}" class="text">Waiting for the start...</a>
+    <div class="progress">
+    <div id="progress-w${i}" class="progress-inside" style="width: 0%"></div>
+    </div>`;
+    document.getElementById('info-main').appendChild(info);
     loader.load(
       `${serverRoot}/models/${UI.name}/${i}.pmx`,
       (mesh) => {
@@ -211,11 +214,11 @@ function Weapons(loader) {
           mesh.position.z = modelParams.z;
         });
         scene.add(mesh);
-        // UI.Finish.Model(`text-w${i}`, `texte-w${i}`, `weapon${i}`);
+        UI.Finish.Model(`text-w${i}`, `texte-w${i}`, `weapon${i}`);
         Timmer.Stop(`weapon${i}`, `武器模型${i}`)
       },
       (xhr) => {
-        // UI.Progress.Model(`-w${i}`, xhr);
+        UI.Progress.Model(`-w${i}`, xhr);
       },
       (err) => {
         UI.Error(6, err);
