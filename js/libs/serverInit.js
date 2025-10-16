@@ -2,6 +2,7 @@ import { server } from "./config.js";
 export const Debug = isDebug();
 export const Timmer = new DbgTimmer(Debug);
 export let serverRoot = '';
+console.log('branch --> oldthree')
 
 async function serverInit(mainfile) {
   Timmer.Start('serverInit')
@@ -22,9 +23,8 @@ async function serverInit(mainfile) {
   // 动态创建Import Map
   const importMap = {
     imports: {
-      "three": `${serverRoot}/js/libs/three.js/three.module.min.js`,
-      "lil-gui": `${serverRoot}/js/libs/lil-gui.esm.min.js`,
-      "libs/": `${serverRoot}/js/libs/`
+      "three": `${serverRoot}/js_oldthree/three.js/three.module.min.js`,
+      "libs/": `${serverRoot}/js_oldthree/`
     }
   };
   const script = document.createElement('script');
