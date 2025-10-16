@@ -1,13 +1,14 @@
-import { GUI } from 'libs/three.js/lil-gui.module.min.js';
 import * as UI from './UI.js';
 import * as THREE from 'three';
+import { InError } from '../3d.js';
 import { Timmer } from '../libs/serverInit.js';
 import { serverRoot } from '../libs/serverInit.js';
 import Stats from 'libs/three.js/libs/stats.module.js';
+import { GUI } from 'libs/three.js/lil-gui.module.min.js';
 import { MMDLoader } from 'libs/three.js/loaders/MMDLoader.js';
-import { MMDAnimationHelper } from 'libs/three.js/animation/MMDAnimationHelper.js';
 import { OutlineEffect } from 'libs/three.js/effects/OutlineEffect.js';
 import { OrbitControls } from 'libs/three.js/controls/OrbitControls.js';
+import { MMDAnimationHelper } from 'libs/three.js/animation/MMDAnimationHelper.js';
 console.log('3D page version: ' + page_version + '\nthree.js version: ' + THREE.REVISION);
 
 let stats, vmdurl, mp3url;
@@ -16,20 +17,19 @@ let camera, scene, renderer, effect;
 const clock = new THREE.Clock();
 const lilgui = new GUI();
 
-// 初始化
-Timmer.Start('threeinit');
-await UI.Init();
-Timmer.Stop('threeinit', 'three初始化');
-
-// 主函数
 try {
+  // 初始化
+  Timmer.Start('threeinit');
+  await UI.Init();
+  // 主函数
   Ammo().then(AmmoLib => {
+    Timmer.Stop('threeinit', 'three初始化');
     Ammo = AmmoLib;
     init();
     animate();
   })
 } catch (e) {
-  UI.Error(2, e)
+  InError(2, e)
 }
 
 // 场景配置
@@ -84,9 +84,12 @@ async function init() {
   skybox.setPath(`${serverRoot}/img/skybox/`);
   skybox.load(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg',], (mesh) => {
     scene.background = mesh;
-    UI.Finish.Skybox();
+    // UI.Finish.Skybox();
     Timmer.Stop('skybox', '天空盒');
-  }, null, () => { UI.Error(3); UI.Finish.Skybox(true) })
+  },
+    () => { debugger },
+    () => { //UI.Error(3); UI.Finish.Skybox(true)
+    })
   // 场景模型
   Timmer.Start('bgmodel');
   loader.load(
@@ -103,7 +106,7 @@ async function init() {
       modelFolder.add(modelParams, 'z', -500, 500).onChange(() => {
         mesh.position.z = modelParams.z;
       });
-      UI.Finish.Model('text2', 'texte2', 'background');
+      // UI.Finish.Model('text2', 'texte2', 'background');
       Timmer.Stop('bgmodel', '背景模型')
     },
     (xhr) => { UI.Progress.Model(2, xhr) },
@@ -146,7 +149,7 @@ async function init() {
       modelFolder.add(modelParams, 'z', -200, 200).onChange(() => {
         mesh.position.z = modelParams.z;
       });
-      UI.Finish.Model('text1', 'texte1', 'module')
+      // UI.Finish.Model('text1', 'texte1', 'module')
       if (UI.vmd !== 0) { Audioload(mmd) };
       Timmer.Stop('mainmodel', '人物模型')
     },
@@ -189,9 +192,9 @@ function Weapons(loader) {
     x = [0, -15, +20, +10, -10];
     z = [0, 0, 0, -20, -20];
   }
-  for (let i = 1; i <= weapon; i++) {
+  for (let i = 1; i <= UI.weapon; i++) {
     Timmer.Start(`weapon${i}`);
-    UI.Start(`weapon${i}`, `-w${i}`, `武器模型${i}:`, `Weapon model${i}:`);
+    // UI.Start(`weapon${i}`, `-w${i}`, `武器模型${i}:`, `Weapon model${i}:`);
     loader.load(
       `${serverRoot}/models/${UI.name}/${i}.pmx`,
       (mesh) => {
@@ -208,11 +211,11 @@ function Weapons(loader) {
           mesh.position.z = modelParams.z;
         });
         scene.add(mesh);
-        UI.Finish.Model(`text-w${i}`, `texte-w${i}`, `weapon${i}`);
+        // UI.Finish.Model(`text-w${i}`, `texte-w${i}`, `weapon${i}`);
         Timmer.Stop(`weapon${i}`, `武器模型${i}`)
       },
       (xhr) => {
-        UI.Progress.Model(`-w${i}`, xhr);
+        // UI.Progress.Model(`-w${i}`, xhr);
       },
       (err) => {
         UI.Error(6, err);

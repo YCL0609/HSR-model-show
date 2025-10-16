@@ -11,23 +11,23 @@ async function Init() {
         const idnum = parseInt(id);
         // vmd加载相关
         const islocal = getUrlParams('localvmd');
-        const vmd = islocal ? -1 : (getUrlParams('vmd') ?? -1);
+        vmd = islocal ? -1 : (getUrlParams('vmd') ?? 0);
         // 缓存处理
         await updateCache('zh');
         // 合规性检查
         if (isNaN(parseInt(vmd)) || vmd < -1 || vmd > 3) InError(2, '非法参数');
         if (idnum > data[0]['total']) InError(2, '非法参数');
-        // 获取文件夹名
+        // 获取文件夹名等
         const roledata = data[id];
         const other = getUrlParams('other') ?? false;
-        let name = other ? roledata['folder'] : id;
+        name = other ? roledata['folder'] : id;
         if (roledata['special']) name = roledata['folder'] + (getUrlParams(roledata['special']) ? `_${roledata['special']}` : '');
+        weapon = roledata['weapons'];
         // UI相关
         document.getElementById('jsload').style.display = "none";
         document.getElementById('skybox').style.display = null;
         document.getElementById('module').style = null;
         document.getElementById('background').style = null;
-        return [name, vmd, roledata['weapons']]
     } catch (e) {
         InError(0, e)
     }
@@ -44,9 +44,9 @@ const Progress = {
         ProgressBar.style.width = (level + 1) * 25 + "%";
     },
     Model: (id, xhr, text = '', texten = '') => {
-        document.getElementById(`text${id} `).innerText = text + "(" + (xhr.loaded / 1024).toFixed(0) + " KB/" + (xhr.total / 1024).toFixed(0) + " KB)";
-        document.getElementById(`texte${id} `).innerText = texten + "(" + (xhr.loaded / 1024).toFixed(0) + " KB/" + (xhr.total / 1024).toFixed(0) + " KB)";
-        document.getElementById(`progress${id} `).style.width = (xhr.loaded / xhr.total * 100) + "%";
+        document.getElementById(`text${id}`).innerText = text + "(" + (xhr.loaded / 1024).toFixed(0) + " KB/" + (xhr.total / 1024).toFixed(0) + " KB)";
+        document.getElementById(`texte${id}`).innerText = texten + "(" + (xhr.loaded / 1024).toFixed(0) + " KB/" + (xhr.total / 1024).toFixed(0) + " KB)";
+        document.getElementById(`progress${id}`).style.width = (xhr.loaded / xhr.total * 100) + "%";
     }
 }
 
