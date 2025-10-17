@@ -53,7 +53,6 @@ const Progress = {
 
 const Finish = {
     Count: () => {
-        console.log(`${onload} != ${(2 + data[id]['weapons'])}  `)
         if (onload != (2 + data[id]['weapons'])) {
             onload++;
         } else {
@@ -78,18 +77,19 @@ const Finish = {
         document.getElementById('text3').innerText = "天空盒加载完成.";
         document.getElementById('texte3').innerText = "Skybox loading finish.";
         document.getElementById('progress3').style.width = "100%";
+        document.getElementById('skybox').style.display = "none";
         Finish.Count();
-        setTimeout(() => document.getElementById('skybox').style.display = "none", 1000);
     },
     // 模型加载完成
     Model: (id, iden, fatherID, text = '') => {
         document.getElementById(id).innerText = text + "加载完成, 请等待材质下载.";
         document.getElementById(iden).innerText = text + "Loading finish, please wait for the material download.";
+        document.getElementById(fatherID).style.display = "none";
         Finish.Count();
-        setTimeout(() => document.getElementById(fatherID).style.display = "none", 1000);
     },
     // 未选择MMD
     Auto: async () => {
+        // debugger
         Finish.Main();
         let from = other ? roledata['from'] : "神帝宇";
         let main = document.getElementById('main');
@@ -108,8 +108,8 @@ const Finish = {
     // 选择MMD
     MMD: async () => {
         Finish.Main();
-        // 检查缓存
-        updateVMDCache(InError);
+        // 检查并获取缓存
+        const vmddata = await updateVMDCache(InError);
         // 借物表
         const from = other ? roledata['from'] : "神帝宇";
         const main = document.getElementById('main');

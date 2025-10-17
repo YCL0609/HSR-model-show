@@ -121,6 +121,10 @@
 	<script type="module">
 		import { serverInit, userChooseServer } from './js/libs/serverInit.js';
 		import { server } from './js/libs/config.js';
+		import { VMD_process } from './js/3d.js';
+
+		window.VMD_process = VMD_process;
+
 		const userSelent = document.getElementById('userSelent')
 		userSelent.addEventListener('click', () => userChooseServer())
 

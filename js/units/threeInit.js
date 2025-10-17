@@ -228,7 +228,16 @@ function Weapons(loader) {
 
 function Audioload(mmd) {
   Timmer.Start('music');
-  UI.Start('music', 4, '音乐文件:', 'Music file:');
+  // 添加UI
+  let info = document.createElement('div');
+  info.id = "music";
+  info.innerHTML = `
+    <a>音乐文件:</a><a id="text4" class="text">等待启动...</a><br>
+    <a>Music file:</a><a id="texte4" class="text">Waiting for the start...</a>
+    <div class="progress">
+    <div id="progress4" class="progress-inside" style="width: 0%"></div>
+    </div>`;
+  document.getElementById('info-main').appendChild(info);
   // 监听
   const audioListener = new THREE.AudioListener();
   camera.add(audioListener);
