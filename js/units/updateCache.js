@@ -1,5 +1,6 @@
 import { Debug, serverRoot } from "../libs/serverInit.js";
-let data, data2, isCacheverok, vmddata;
+import { vmd } from "./UI.js";
+let data, data2, isCacheverok;
 const langCfg = {
     zh: { data: null, data2: null, text: null },
     jp: { data: null, data2: null, text: null },
@@ -71,25 +72,30 @@ async function updateCache(lang, InError) {
 
 async function updateVMDCache(InError) {
     const cacheData = localStorage.getItem('vmddata');
+    if (vmd === -1) {
+        return {
+            from: "User Selent",
+            name: "User Selent"
+        };
+    }
     if (!cacheData || !isCacheverok) {
         Debug ? console.log("副缓存: %c使用网络资源", "color:#ff0") : null;
         // 获取新数据
         const response = await fetch(`${serverRoot}/vmd/data.json`);
         if (!response.ok) InError(0, `HTTP ${response.status} ${response.statusText}`, `:${dataname}.json文件获取失败`);
         const newdata = await response.json();
-        vmddata = newdata[vmd];
         // 缓存数据
         localStorage.setItem('vmddata', JSON.stringify(newdata))
+        return newdata[vmd];
     } else {
         Debug ? console.log("副缓存: %c使用缓存资源", "color:#0f0") : null;
-        vmddata = JSON.parse(cacheData)[vmd];
+        return JSON.parse(cacheData)[vmd];
     }
 }
 
 export {
     data,
     data2,
-    vmddata,
     langCfg,
     updateCache,
     updateVMDCache

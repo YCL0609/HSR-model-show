@@ -1,7 +1,8 @@
 import { Timmer, serverRoot } from "../js/libs/serverInit.js";
+import { urlChange } from "../js/libs/serverInit.js";
 import { Progress } from "./units/UI.js";
 
-export function init() {
+function init() {
     Timmer.Start('load');
     Progress.Main(0);
     loadExternalResource(`${serverRoot}/js/libs/three.js/libs/ammo.wasm.js`, 'js')
@@ -14,11 +15,20 @@ export function init() {
         .catch(err => InError(1, err.stack, true))
 }
 
-export function InError(errid = 0, errtxt, isThrow = false) {
+function InError(errid = 0, errtxt, isThrow = false) {
     const errName = [
         '未知错误',
+
         '依赖文件加载错误',
-        '页面参数错误'
+        '页面参数错误',
+        "three.js初始化错误",
+        "天空盒加载错误",
+        "场景模型加载错误",
+
+        "人物模型加载错误",
+        "武器模型加载错误",
+        "MMD声音文件加载错误"
+
     ];
     console.log(`%c${errName[errid]}: ${errtxt}`, 'color: orange');
     const errorDiv = document.getElementById('error');
@@ -47,8 +57,7 @@ function VMD_process(para) {
             list.style.display = "";
             break;
         case 'local': // 使用本地文件
-            ChangeURL('localvmd', true);
-            location.reload()
+            urlChange('localvmd', true);
             break;
         case 'load':
             main.style.display = "none";
@@ -61,8 +70,7 @@ function VMD_process(para) {
         case 1: // 使用现有文件
         case 2:
         case 3:
-            ChangeURL('vmd', para);
-            location.reload();
+            urlChange('vmd', para);
             break;
         default:
             main.style.display = "none";
@@ -71,4 +79,10 @@ function VMD_process(para) {
             local.style.display = "none";
             break;
     }
+}
+
+export {
+    init,
+    InError,
+    VMD_process
 }
