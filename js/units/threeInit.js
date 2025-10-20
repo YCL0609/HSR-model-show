@@ -217,12 +217,9 @@ function Weapons(loader) {
         UI.Finish.Model(`text-w${i}`, `texte-w${i}`, `weapon${i}`);
         Timmer.Stop(`weapon${i}`, `武器模型${i}`)
       },
-      (xhr) => {
-        UI.Progress.Model(`-w${i}`, xhr);
-      },
-      (err) => {
-        UI.Error(6, err);
-      });
+      (xhr) => UI.Progress.Model(`-w${i}`, xhr),
+      (err) => InError(7, err.stack)
+    );
   }
 }
 
@@ -269,7 +266,7 @@ function Audioload(mmd) {
         }
       }, 2000);
     },
-    (xhr) => { UI.Progress.Model(4, xhr); },
-    (err) => { UI.Error(7, err) }
+    (xhr) => UI.Progress.Model(4, xhr),
+    (err) => InError(8, err.stack)
   );
 }

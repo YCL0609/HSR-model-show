@@ -1,7 +1,7 @@
 import { ProgressInfo, ProgressInfo_English } from "../libs/config.js";
-import { data, updateCache, updateVMDCache } from "./updateCache.js";
+import { data, data2, updateCache, updateVMDCache } from "./updateCache.js";
 import { InError } from "../3d.js";
-let id, name, vmd, other, weapon;
+let id, name, vmd, other, weapon, roledata;
 let onload = 0;
 
 async function Init() {
@@ -19,8 +19,8 @@ async function Init() {
         if (isNaN(parseInt(vmd)) || vmd < -1 || vmd > 3) InError(2, `参数vmd值${vmd}非法`);
         if (isNaN(idnum) || idnum <= 0 || idnum > data[0]['total']) InError(2, `参数id值${id}非法`);
         // 获取文件夹名等
-        const roledata = data[id];
         other = getUrlParams('other') ?? false;
+        roledata = other ? data2[id] : data[id];
         name = other ? roledata['folder'] : id;
         if (roledata['special']) name = roledata['folder'] + (getUrlParams(roledata['special']) ? `_${roledata['special']}` : '');
         weapon = roledata['weapons'];
@@ -52,8 +52,10 @@ const Progress = {
 }
 
 const Finish = {
+    // 完成计数
     Count: () => {
-        if (onload != (2 + data[id]['weapons'])) {
+        debugger
+        if (onload != (2 + roledata['weapons'])) {
             onload++;
         } else {
             (vmd != 0) ? Finish.MMD() : Finish.Auto();
