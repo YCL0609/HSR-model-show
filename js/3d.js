@@ -18,17 +18,14 @@ function init() {
 function InError(errid = 0, errtxt, isThrow = false) {
     const errName = [
         '未知错误',
-
         '依赖文件加载错误',
         '页面参数错误',
         "three.js初始化错误",
         "天空盒加载错误",
-        "场景模型加载错误",
-
+        "场景模型加载错误", // 5
         "人物模型加载错误",
         "武器模型加载错误",
         "MMD声音文件加载错误"
-
     ];
     console.log(`%c${errName[errid]}: ${errtxt}`, 'color: orange');
     const errorDiv = document.getElementById('error');
@@ -59,7 +56,7 @@ function VMD_process(para) {
         case 'local': // 使用本地文件
             urlChange('localvmd', true);
             break;
-        case 'load':
+        case 'load': // 加载用户选择
             main.style.display = "none";
             window.loadok = true;
             break;

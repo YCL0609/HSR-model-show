@@ -32,7 +32,6 @@ export function InError(errid = 0, errtxt, isThrow = false) {
         6: "角色信息获取失败"
     };
     console.log(`%c${errName[errid]}: ${errtxt}`, 'color: orange');
-    /**需要修改**/
-    // document.getElementsByClassName('fault')[0].innerHTML = `<i>Error Code ${errid}</i> ` + langCfg[langCfg.userSelect]["errInfo"];
+    document.getElementsByClassName('fault')[0].innerHTML = `Script Error (Code ${errid}): ${errtxt}`;
     if (isThrow) { throw new Error(errName[errid]) }
 }

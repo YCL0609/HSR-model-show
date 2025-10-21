@@ -20,13 +20,7 @@ body {
     margin: 20px 0;
     text-align: center;
     box-sizing: border-box;
-    background-color: #4c4c4cc7
-}
-
-.updata {
-    color:chocolate;
-    font-style: italic;
-    text-decoration: underline;
+    background-color: #ffffffcc;
 }
 
 .info {
@@ -34,11 +28,14 @@ body {
 }
 
 .info a {
-    color: #b3ccff;
     text-decoration: none;
     border-bottom: solid #000;
-
 }
+
+.info a:hover {
+    text-decoration: underline;
+}
+
 
 /* 主体-语言选择 */
 .lang {
@@ -80,7 +77,6 @@ body {
 }
 
 .tip a {
-    color: #b3ccff;
     text-decoration: underline
 }
 
@@ -158,7 +154,6 @@ tbody[data-gencell] td {
 
 .note {
     width: 90%;
-    color: #fff;
     margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
@@ -215,6 +210,19 @@ tbody[data-gencell] td {
     cursor: pointer;
     background-color: #878787;
 }
+
+/* 黑色模式 */
+@media (prefers-color-scheme: dark) {
+    .main{
+        background-color: #4c4c4ce1
+    }
+
+    #text10,
+    #title a {
+        color: #88C0F5;
+    }
+}
+
 
 /* 适配手机端 */
 @media (max-width: 768px) {

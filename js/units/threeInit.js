@@ -251,20 +251,20 @@ function Audioload(mmd) {
       document.getElementById('text4').innerText = "加载完成.";
       document.getElementById('music').style.display = "none";
       Timmer.Stop('music', '音频文件');
-      setTimeout(() => {
-        UI.Finish.MMD();
-        let ok = document.getElementById('start');
-        ok.innerText = "开始(Start)";
-        ok.onclick = () => {
-          oceanAmbientSound.play();// 播放音频
-          document.getElementById('info').style.display = "none";
-          // 开始动画
-          helper.add(mesh, {
-            animation: mmd.animation,
-            physics: true
-          });
-        }
-      }, 2000);
+      let ok = document.getElementById('start');
+      ok.innerText = "开始(Start)";
+      ok.onclick = () => {
+        oceanAmbientSound.play();// 播放音频
+        document.getElementById('info').style.display = "none";
+        document.getElementById('banner').style.display = "none";
+        // 开始动画
+        helper.add(mesh, {
+          animation: mmd.animation,
+          physics: true
+        });
+
+      };
+      UI.Finish.Count();
     },
     (xhr) => UI.Progress.Model(4, xhr),
     (err) => InError(8, err.stack)

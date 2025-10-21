@@ -2,7 +2,7 @@ import { server } from "./config.js";
 export const Debug = isDebug();
 export const Timmer = new DbgTimmer(Debug);
 export let serverRoot = '';
-console.log('branch --> oldthree')
+console.log('%cbranch => oldthree *当前项目分支非主分支', 'color: orange')
 
 async function serverInit(mainfile) {
   Timmer.Start('serverInit')
@@ -49,14 +49,13 @@ async function serverInit(mainfile) {
 // 获取可用服务器
 async function getServer() {
   try {
-    return server.list[0]; // Debug
-    // const userSelect = getUrlParams('server');
-    // if (server.list[userSelect]) return server.list[userSelect];
-    // const response0 = await fetch(server.list[0]);
-    // if (response0.ok) return server.list[0];
-    // const response1 = await fetch(server.list[1])
-    // if (response1.ok) return server.list[1];
-    // return -1
+    const userSelect = getUrlParams('server');
+    if (server.list[userSelect]) return server.list[userSelect];
+    const response0 = await fetch(server.list[0]);
+    if (response0.ok) return server.list[0];
+    const response1 = await fetch(server.list[1])
+    if (response1.ok) return server.list[1];
+    return -1
   } catch (_) { return -1; }
 }
 

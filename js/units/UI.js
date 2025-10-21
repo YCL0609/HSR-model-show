@@ -23,7 +23,7 @@ async function Init() {
         roledata = other ? data2[id] : data[id];
         name = other ? roledata['folder'] : id;
         if (roledata['special']) name = roledata['folder'] + (getUrlParams(roledata['special']) ? `_${roledata['special']}` : '');
-        weapon = roledata['weapons'];
+        weapon = roledata['weapons'] ?? 0;
         // UI相关
         document.getElementById('jsload').style.display = "none";
         document.getElementById('skybox').style.display = null;
@@ -54,8 +54,9 @@ const Progress = {
 const Finish = {
     // 完成计数
     Count: () => {
-        debugger
-        if (onload != (2 + roledata['weapons'])) {
+        const number = 2 + (vmd == 0 ? weapon : 1);
+        // debugger
+        if (onload != number) {
             onload++;
         } else {
             (vmd != 0) ? Finish.MMD() : Finish.Auto();
@@ -65,8 +66,8 @@ const Finish = {
     Main: () => {
         let title = document.getElementsByClassName('title');
         for (let i = 0; i < title.length; i++) title[i].click();
-        document.getElementById('text0').innerText = "加载完成, 请等待材质下载.";
-        document.getElementById('texte0').innerText = "Loading finish, please wait for the material download.";
+        document.getElementById('text0').innerText = ProgressInfo[4];
+        document.getElementById('texte0').innerText = ProgressInfo_English[4];
         document.getElementById('progress0').style.width = "100%";
         document.getElementById('three').style.top = "-60px";
     },
@@ -76,22 +77,21 @@ const Finish = {
             document.getElementById('progress3').style.backgroundColor = "red";
             InError(3);
         }
-        document.getElementById('text3').innerText = "天空盒加载完成.";
-        document.getElementById('texte3').innerText = "Skybox loading finish.";
+        document.getElementById('text3').innerText = ProgressInfo.Skybox;
+        document.getElementById('texte3').innerText = ProgressInfo_English.Skybox;
         document.getElementById('progress3').style.width = "100%";
         document.getElementById('skybox').style.display = "none";
         Finish.Count();
     },
     // 模型加载完成
-    Model: (id, iden, fatherID, text = '') => {
-        document.getElementById(id).innerText = text + "加载完成, 请等待材质下载.";
-        document.getElementById(iden).innerText = text + "Loading finish, please wait for the material download.";
+    Model: (id, iden, fatherID) => {
+        document.getElementById(id).innerText = ProgressInfo[4];
+        document.getElementById(iden).innerText = ProgressInfo_English[4];
         document.getElementById(fatherID).style.display = "none";
         Finish.Count();
     },
     // 未选择MMD
     Auto: async () => {
-        // debugger
         Finish.Main();
         let from = other ? roledata['from'] : "神帝宇";
         let main = document.getElementById('main');
@@ -104,7 +104,10 @@ const Finish = {
         a.innerHTML = `模型来源: ${from}<br><br>Model from: ${from}`;
         a.style.textAlign = "center"
         main.appendChild(a);
-        setTimeout(() => document.getElementById('info').style.display = "none", 2000)
+        setTimeout(() => {
+            document.getElementById('banner').style.display = "none";
+            document.getElementById('info').style.display = "none";
+        }, 2000)
         console.log(`Model:\nID:${id} From:${from} Weapons:${data[id]['weapons']}`);
     },
     // 选择MMD
