@@ -83,4 +83,8 @@ function urlChange(key, value) {
   window.location.href = newUrl;
 }
 
-export { serverInit, userChooseServer };
+export {
+  urlChange,
+  serverInit,
+  userChooseServer
+};

@@ -83,31 +83,31 @@ async function init() {
   skybox.setPath(`${serverRoot}/img/skybox/`);
   skybox.load(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg',], (mesh) => {
     scene.background = mesh;
-    // UI.Finish.Skybox();
+    UI.Finish.Skybox();
     Timmer.Stop('skybox', '天空盒');
-  }, null, () => { UI.Error(3); UI.Finish.Skybox(true) })
+  }, null, (err) => UI.Finish.Skybox(true, err.stack))
   // 场景模型
   Timmer.Start('bgmodel');
-  loader.load(
-    `${serverRoot}/models/background/index.pmx`,
-    (mesh) => {
-      // 添加到屏幕( X:0 y:-11.7 Z:0)
-      mesh.position.y = -11.7;
-      scene.add(mesh);
-      const modelFolder = lilgui.addFolder('场景');
-      const modelParams = { x: 0, z: 0 }
-      modelFolder.add(modelParams, 'x', -500, 500).onChange(() => {
-        mesh.position.x = modelParams.x;
-      });
-      modelFolder.add(modelParams, 'z', -500, 500).onChange(() => {
-        mesh.position.z = modelParams.z;
-      });
-      // UI.Finish.Model('text2', 'texte2', 'background');
-      Timmer.Stop('bgmodel', '背景模型')
-    },
-    (xhr) => { UI.Progress.Model(2, xhr) },
-    (err) => { UI.Error(4, err) }
-  );
+  // loader.load(
+  //   `${serverRoot}/models/background/index.pmx`,
+  //   (mesh) => {
+  //     // 添加到屏幕( X:0 y:-11.7 Z:0)
+  //     mesh.position.y = -11.7;
+  //     scene.add(mesh);
+  //     const modelFolder = lilgui.addFolder('场景');
+  //     const modelParams = { x: 0, z: 0 }
+  //     modelFolder.add(modelParams, 'x', -500, 500).onChange(() => {
+  //       mesh.position.x = modelParams.x;
+  //     });
+  //     modelFolder.add(modelParams, 'z', -500, 500).onChange(() => {
+  //       mesh.position.z = modelParams.z;
+  //     });
+  //     UI.Finish.Model('text2', 'texte2', 'background');
+  //     Timmer.Stop('bgmodel', '背景模型');
+  //   },
+  //   (xhr) => UI.Progress.Model(2, xhr),
+  //   (err) => InError(5, err.stack)
+  // );
   const text = (UI.vmd == 0) ? '模型文件:' : '模型和动作文件:'
   const texten = (UI.vmd == 0) ? 'Model Files:' : 'Model and Action Files:'
   if (UI.vmd === -1) {
@@ -130,33 +130,28 @@ async function init() {
   }
   Timmer.Start('mainmodel');
   loader.load(
-    `${serverRoot}/models/${UI.name}/index.pmx`, //
-    (mmdMesh) => { // ⚠️ 注意：回调参数现在是 SkinnedMesh 对象，而不是旧版返回的 { mesh, animation, ... } 对象
+    `${serverRoot}/models/${UI.name}/index.pmx`,
+    (mmdMesh) => {
       // 添加到屏幕( X:0 y:-10 Z:0)
-      mesh = mmdMesh; //
-      mesh.position.y = -10; //
-      scene.add(mesh); //
-      const modelFolder = lilgui.addFolder('人物'); //
-      const modelParams = { x: 0, z: 0 } //
-      modelFolder.add(modelParams, 'x', -200, 200).onChange(() => { //
-        mesh.position.x = modelParams.x; //
-      }); //
-      modelFolder.add(modelParams, 'z', -200, 200).onChange(() => { //
-        mesh.position.z = modelParams.z; //
-      }); //
-      UI.Finish.Model('text1', 'texte1', 'module') //
-      if (UI.vmd !== 0) { Audioload(mmdMesh) }; // ⚠️ 传入 mesh 模型实例
-      Timmer.Stop('mainmodel', '人物模型') //
-    }, //
-    (xhr) => { //
-      UI.Progress.Model(1, xhr, text, texten); //
-    }, //
-    (err) => { //
-      console.error(err); //
-      UI.Error(5, err) //
-    } //
-  ); //
-  // (UI.vmd == 0) ? Weapons(loader) : null;
+      mesh = mmdMesh;
+      mesh.position.y = -10;
+      scene.add(mesh);
+      const modelFolder = lilgui.addFolder('人物');
+      const modelParams = { x: 0, z: 0 }
+      modelFolder.add(modelParams, 'x', -200, 200).onChange(() => {
+        mesh.position.x = modelParams.x;
+      });
+      modelFolder.add(modelParams, 'z', -200, 200).onChange(() => {
+        mesh.position.z = modelParams.z;
+      });
+      UI.Finish.Model('text1', 'texte1', 'module')
+      if (UI.vmd !== 0) { Audioload(mmdMesh) };
+      Timmer.Stop('mainmodel', '人物模型')
+    },
+    (xhr) => UI.Progress.Model(1, xhr, text, texten),
+    (err) => InError(6, err.stack)
+  );
+  (UI.vmd == 0) ? Weapons(loader) : null;
 
   // 相机
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -187,12 +182,89 @@ function Weapons(loader) {
     x = [0, -15, +20, +10, -10];
     z = [0, 0, 0, -20, -20];
   }
-  for (let i = 1; i <= weapon; i++) {
+  
+  for (let i = 1; i <= UI.weapon; i++) {
     Timmer.Start(`weapon${i}`);
-    UI.Start(`weapon${i}`, `-w${i}`, `武器模型${i}:`, `Weapon model${i}:`);
+    
+    // 添加UI
+    let info = document.createElement('div');
+    info.id = `weapon${i}`;
+    info.innerHTML = `
+    <a>武器模型${i}:</a><a id="text-w${i}" class="text">等待启动...</a><br>
+    <a>Weapon model${i}:</a><a id="texte-w${i}" class="text">Waiting for the start...</a>
+    <div class="progress">
+    <div id="progress-w${i}" class="progress-inside" style="width: 0%"></div>
+    </div>`;
+    document.getElementById('info-main').appendChild(info);
+    
     loader.load(
       `${serverRoot}/models/${UI.name}/${i}.pmx`,
       (mesh) => {
+
+        // 修复 THREE.js r150+ 版本与 three-mmd 材质的 Morph Targets 不兼容问题
+        // mesh.traverse(function (child) {
+        //   // 确保是 Mesh 且有 Material
+        //   if (!child.isMesh || !child.material || !child.geometry.morphAttributes.position) return;
+
+        //   // 处理单个材质或材质数组
+        //   const materials = Array.isArray(child.material) ? child.material : [child.material];
+
+        //   materials.forEach(material => {
+        //     // 检查是否是 MMDToonMaterial
+        //     if (material.isMMDToonMaterial) {
+              
+        //       const geometry = child.geometry;
+        //       const morphCount = geometry.morphAttributes.position.length;
+              
+        //       // 仅对带有 Morph Targets 的材质应用修复
+        //       if (morphCount > 0) {
+                
+        //         // 缓存 three-mmd 自己的 onBeforeCompile
+        //         const originalOnBeforeCompile = material.onBeforeCompile;
+
+        //         // 覆盖 onBeforeCompile
+        //         material.onBeforeCompile = (shader, renderer) => {
+        //           // 1. 调用原始的 onBeforeCompile，保留 three-mmd 的材质逻辑
+        //           if (originalOnBeforeCompile) {
+        //             originalOnBeforeCompile(shader, renderer);
+        //           }
+
+        //           // 2. 核心修复：执行字符串替换以绕过 three.js 宏定义缺失的检查。
+        //           // 这些替换针对 Vertex Shader 中的三个错误行进行精准修复。
+                  
+        //           // a. 修复第 307 行: uniform float morphTargetInfluences[ MORPHTARGETS_COUNT ];
+        //           //    将 [ MORPHTARGETS_COUNT ] 替换为实际数量 [ N ]
+        //           //    (GLSL 要求数组大小是常量)
+        //           shader.vertexShader = shader.vertexShader.replace(
+        //             'uniform float morphTargetInfluences[ MORPHTARGETS_COUNT ];',
+        //             `uniform float morphTargetInfluences[ ${morphCount} ];` 
+        //           );
+
+        //           // b. 修复第 312 行: int texelIndex = vertexIndex * MORPHTARGETS_TEXTURE_STRIDE + offset;
+        //           //    将 MORPHTARGETS_TEXTURE_STRIDE 替换为常量 float '4.0'
+        //           shader.vertexShader = shader.vertexShader.replace(
+        //             'int texelIndex = vertexIndex * MORPHTARGETS_TEXTURE_STRIDE + offset;',
+        //             'int texelIndex = vertexIndex * 4 + offset;' // 4是MMDToon材质通常的步长
+        //           );
+                  
+        //           // c. 修复第 563 行: < MORPHTARGETS_COUNT (在循环条件中)
+        //           //    < MORPHTARGETS_COUNT 替换为 < N
+        //           shader.vertexShader = shader.vertexShader.replace(
+        //             /< MORPHTARGETS_COUNT/g,
+        //             `< ${morphCount}.0` // 使用 float 避免 GLSL 类型推断问题
+        //           );
+                  
+        //           console.log(`MMDToonMaterial: ${material.name} - Morph Target Shader Fix Applied.`);
+        //         };
+                
+        //         // 3. 强制 THREE.js 重新编译这个材质
+        //         // ⚠️ 这必须在设置 onBeforeCompile 之后调用，以触发编译。
+        //         material.needsUpdate = true; 
+        //       }
+        //     }
+        //   });
+        // });
+
         // 添加到屏幕(X,Y,Z)
         mesh.position.x = x[i];
         mesh.position.y = -7;
@@ -209,12 +281,9 @@ function Weapons(loader) {
         UI.Finish.Model(`text-w${i}`, `texte-w${i}`, `weapon${i}`);
         Timmer.Stop(`weapon${i}`, `武器模型${i}`)
       },
-      (xhr) => {
-        UI.Progress.Model(`-w${i}`, xhr);
-      },
-      (err) => {
-        UI.Error(6, err);
-      });
+      (xhr) => UI.Progress.Model(`-w${i}`, xhr),
+      (err) => InError(7, err.stack)
+    );
   }
 }
 
@@ -244,7 +313,7 @@ function Audioload(mmdMesh) { //
         ok.onclick = () => { //
           oceanAmbientSound.play();// 播放音频
           document.getElementById('info').style.display = "none"; //
-          
+
           // ⚠️ FIX: 在点击时异步加载 VMD 动画
           loader.load(
             vmdurl,
@@ -256,11 +325,11 @@ function Audioload(mmdMesh) { //
               });
             },
             // progress handler (optional)
-            null, 
+            null,
             // error handler
             (err) => {
-                console.error("VMD 动画文件加载失败:", err);
-                UI.Error(5, err);
+              console.error("VMD 动画文件加载失败:", err);
+              UI.Error(5, err);
             }
           );
         } //

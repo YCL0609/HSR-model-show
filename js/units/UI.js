@@ -54,7 +54,7 @@ const Progress = {
 const Finish = {
     // 完成计数
     Count: () => {
-        debugger
+        // debugger
         if (onload != (2 + roledata['weapons'])) {
             onload++;
         } else {
