@@ -3,7 +3,7 @@ import { vmd } from "./UI.js";
 let data, data2, isCacheverok, isUpdate;
 const langCfg = {
     zh: { data: null, data2: null, text: null },
-    jp: { data: null, data2: null, text: null },
+    ja: { data: null, data2: null, text: null },
     en: { data: null, data2: null, text: null },
     ko: { data: null, data2: null, text: null },
     userSelect: null
