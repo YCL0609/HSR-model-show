@@ -22,6 +22,18 @@
             color: #0066cc;
         }
 
+        .beta {
+            color: darkorange;
+        }
+
+        .warn {
+            color: chocolate;
+        }
+
+        .warntip {
+            color: goldenrod;
+        }
+
         @media (prefers-color-scheme: dark) {
             body {
                 background-color: #222;
@@ -31,6 +43,14 @@
             a {
                 color: #7fffd4
             }
+
+            .beta {
+                color: burlywood;
+            }
+
+            .warntip {
+                color: yellow;
+            }
         }
     </style>
 </head>
@@ -38,94 +58,132 @@
 <body>
     <h3>Note: The English changelog starts with V2.6</h3>
 
+    <h2>2025-10-24 <a class="beta">V4.0 RC*</a></h2>
+    <b class="warn">&emsp;*当前项目分支main_oldthree非主分支</b><br>
+    <ul>
+        <li>中文:</li>
+        <ul>
+            <li>重写整个项目js逻辑，将函数分离到文件以加强可扩展性</li>
+            <li>重写用于调试的代码和错误处理逻辑增加健壮性</li>
+            <li>将服务器选择逻辑从并发测试后选择变为制定主服务器和副服务器</li>
+            <li>修复本地缓存代码方面的逻辑错误</li>
+            <li>向主页面css添加亮色模式支持</li>
+            <li>优化3d页面使用vmd时的加载逻辑</li>
+            <li>将three.js升级到V158版本</li>
+            <ul>
+                <li class="warntip">因three.js V180不包含mmd工具，且第三方工具@moeru/three-mmd加载部分模型会报错，故降级到three.js V158版本并分离出新分支
+                </li>
+            </ul>
+        </ul>
+    </ul>
+    <b class="warn">&emsp;*The current project branch main_oldthree is not the main branch.</b>
+    <ul>
+        <li>English:</li>
+        <ul>
+            <li>Rewrite the entire project's JS logic and separate functions into files to enhance scalability</li>
+            <li>Rewrite debugging and error-handling code to improve robustness</li>
+            <li>Change server selection logic from choosing after concurrent tests to specifying a primary server and a
+                secondary server</li>
+            <li>Fix logical errors in local cache code</li>
+            <li>Add light mode support to the main page CSS</li>
+            <li>Optimize 3D page loading logic when using VMD</li>
+            <li>Upgrade three.js to version V158</li>
+            <ul>
+                <li class="warntip">Because three.js V180 does not include MMD tools, and some models may cause errors
+                    when loaded with the third-party tool @moeru/three-mmd, it is downgraded to three.js V158 and a new
+                    branch is created</li>
+            </ul>
+        </ul>
+    </ul>
     <h2>2025-06-20 <a>V3.1</a></h2>
     <ul>
-        <li>中文:
-            <ul>
-                <li>添加缓存控制降低网络请求量</li>
-                <li>更新并去除所有使用旧版json处理函数的代码</li>
-            </ul>
-        </li>
-        <li>英文:
-            <ul>
-                <li>Added cache control to reduce too many network requests</li>
-                <li>Update and remove all code using old json processing functions</li>
-            </ul>
+        <li>中文:</li>
+        <ul>
+            <li>添加缓存控制降低网络请求量</li>
+            <li>更新并去除所有使用旧版json处理函数的代码</li>
+        </ul>
+    </ul>
+    <ul>
+        <li>English:</li>
+        <ul>
+            <li>Added cache control to reduce too many network requests</li>
+            <li>Update and remove all code using old json processing functions</li>
+        </ul>
         </li>
     </ul>
 
     <h2>2025-03-24 <a>V3.0</a></h2>
     <ul>
-        <li>中文:
-            <ul>
-                <li>添加记忆命途</li>
-                <li>更换主页面立绘显示方式</li>
-                <li>更换主页面对资源文件的处理方法</li>
-                <li>主页面增加错误处理函数</li>
-                <li>重写主页面语言切换函数</li>
-                <li>重写主页面和3D页面用户服务器选择函数</li>
-                <li>向所有有效页面添加调试工具支持</li>
-            </ul>
-        </li>
-        <li>English:
-            <ul>
-                <li>Add Remembrance Paths</li>
-                <li>Changed the main page portrait display method</li>
-                <li>Updated the main page's handling of resource files</li>
-                <li>Added error handling functions to the main page</li>
-                <li>Rewrote the main page language switching function</li>
-                <li>Rewrote the user server selection function for the main page and 3D page</li>
-                <li>Added debugging tool support to all valid pages</li>
-            </ul>
-        </li>
+        <li>中文:</li>
+        <ul>
+            <li>添加记忆命途</li>
+            <li>更换主页面立绘显示方式</li>
+            <li>更换主页面对资源文件的处理方法</li>
+            <li>主页面增加错误处理函数</li>
+            <li>重写主页面语言切换函数</li>
+            <li>重写主页面和3D页面用户服务器选择函数</li>
+            <li>向所有有效页面添加调试工具支持</li>
+        </ul>
+    </ul>
+    <ul>
+        <li>English:</li>
+        <ul>
+            <li>Add Remembrance Paths</li>
+            <li>Changed the main page portrait display method</li>
+            <li>Updated the main page's handling of resource files</li>
+            <li>Added error handling functions to the main page</li>
+            <li>Rewrote the main page language switching function</li>
+            <li>Rewrote the user server selection function for the main page and 3D page</li>
+            <li>Added debugging tool support to all valid pages</li>
+        </ul>
     </ul>
 
     <h2>2024-10-13 <a>V2.7</a></h2>
     <ul>
-        <li>中文:
-            <ul>
-                <li>添加支持使用第三方vmd和mp3文件</li>
-            </ul>
-        </li>
-        <li>English:
-            <ul>
-                <li>Add support for using third-party vmd and mp3 files</li>
-            </ul>
-        </li>
+        <li>中文:</li>
+        <ul>
+            <li>添加支持使用第三方vmd和mp3文件</li>
+        </ul>
+    </ul>
+    <ul>
+        <li>English:</li>
+        <ul>
+            <li>Add support for using third-party vmd and mp3 files</li>
+        </ul>
     </ul>
 
     <h2>2024-07-04 <a>V2.6.1</a></h2>
     <ul>
-        <li>中文:
-            <ul>
-                <li>完成人物立绘图片的翻译工作</li>
-            </ul>
-        </li>
-        <li>English:
-            <ul>
-                <li>Complete the translation of the character portrait images</li>
-            </ul>
-        </li>
+        <li>中文:</li>
+        <ul>
+            <li>完成人物立绘图片的翻译工作</li>
+        </ul>
+    </ul>
+    <ul>
+        <li>English:</li>
+        <ul>
+            <li>Complete the translation of the character portrait images</li>
+        </ul>
     </ul>
 
     <h2>2024-06-16 <a>V2.6</a></h2>
     <ul>
-        <li>中文:
-            <ul>
-                <li>网页支持四国语言</li>
-                <li>优化3d展示页UI</li>
-                <li>重建人物数据文件以支持四国语言 (数据库更新)</li>
-                <li>修改所有人物模型以支持有限的光照阴影 (数据库更新)</li>
-            </ul>
-        </li>
-        <li>English:
-            <ul>
-                <li>The website supports four languages</li>
-                <li>Optimized the UI of the 3D display page</li>
-                <li>Rebuild the character data file to support four languages (database update).</li>
-                <li>Modify all character models to support limited lighting shadows (database update).</li>
-            </ul>
-        </li>
+        <li>中文:</li>
+        <ul>
+            <li>网页支持四国语言</li>
+            <li>优化3d展示页UI</li>
+            <li>重建人物数据文件以支持四国语言 (数据库更新)</li>
+            <li>修改所有人物模型以支持有限的光照阴影 (数据库更新)</li>
+        </ul>
+    </ul>
+    <ul>
+        <li>English:</li>
+        <ul>
+            <li>The website supports four different languages</li>
+            <li>Optimized the UI of the 3D display page</li>
+            <li>Rebuild the character data file to support four languages (database update).</li>
+            <li>Modify all character models to support limited lighting shadows (database update).</li>
+        </ul>
     </ul>
 
     <h2>2024-03-10 <a>V2.5</a></h2>

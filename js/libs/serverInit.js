@@ -8,8 +8,8 @@ async function serverInit(mainfile) {
   // 调试初始化
   let debugRoot = '';
   if (Debug) {
-    const id = getUrlParams('debug');
-    const islocal = id === undefined ? true : id;
+    const id = Number(getUrlParams('debug'));
+    const islocal = (id === NaN) ? true : id;
     console.log(`是否使用本地文件: %c${islocal ? true : false}`, 'color: #0ff');
     if (islocal) {
       const protocol = window.location.protocol.slice(0, -1);

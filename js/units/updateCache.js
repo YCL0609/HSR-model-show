@@ -1,9 +1,9 @@
 import { Debug, serverRoot } from "../libs/serverInit.js";
 import { vmd } from "./UI.js";
-let data, data2, isCacheverok;
+let data, data2, isCacheverok, isUpdate;
 const langCfg = {
     zh: { data: null, data2: null, text: null },
-    jp: { data: null, data2: null, text: null },
+    ja: { data: null, data2: null, text: null },
     en: { data: null, data2: null, text: null },
     ko: { data: null, data2: null, text: null },
     userSelect: null
@@ -26,8 +26,10 @@ async function updateCache(lang, InError) {
 
     // 判断是否需要更新
     const isCacheok = langData && mainData;
-    isCacheverok = serverVer && localStorage.getItem('lang_version') == serverVer;
-    if (!isCacheok || !isCacheverok) {
+    const localVer = localStorage.getItem('lang_version')
+    isCacheverok = serverVer && localVer == serverVer;
+    isUpdate = !isCacheok || !isCacheverok;
+    if (isUpdate || !isCacheok || !isCacheverok) {
         // 从网络获取数据
         Debug ? console.log('缓存: %c使用网络资源', 'color:#ff0') : null;
         try {
@@ -40,14 +42,12 @@ async function updateCache(lang, InError) {
                     if (!langCfg[lang]) langCfg[lang] = { data: null, data2: null, text: null };
                     langCfg[lang][name] = json;
                 }),
-
                 // 加载 data.json
                 (async () => {
                     const response = await fetch(`${serverRoot}/data.json`);
                     if (!response.ok) InError(4, `data.json 文件获取失败: HTTP ${response.status} ${response.statusText}`);
                     data = await response.json();
                 })(),
-
                 // 加载 data2.json
                 (async () => {
                     const response2 = await fetch(`${serverRoot}/data2.json`);
@@ -68,6 +68,7 @@ async function updateCache(lang, InError) {
         data2 = JSON.parse(mainData).data2;
         Debug ? console.log('缓存: %c使用缓存资源', 'color:#0f0') : null;
     }
+    console.log(`缓存版本: %c${localVer}`, 'color:#0ff');
 }
 
 async function updateVMDCache(InError) {

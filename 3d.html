@@ -5,14 +5,16 @@
 	<title>3D模型查看</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!-- 维护时打开 -->
+    <!-- <meta http-equiv="refresh" content="0,url=updating.html"> -->
 	<link type="text/css" rel="stylesheet" href="css/3d.css">
 	<link href="favicon.ico" rel="shortcut icon">
 	<script>
-		const page_version = "3.0.0.0324"; 
+		const page_version = "4.0.0.1021 RC"; 
 	</script>
 	<script src="./outsite/dist/function.bundle.min.js" type="module"></script>
 	<script src="./js/libs/serverInit.js" type="module"></script>
-	<!-- <script src="js/baidu.js"></script> -->
+	<script src="./js/baidu.js"></script>
 </head>
 
 <body>
@@ -108,21 +110,31 @@
 				<input type="url" id="mp3Input" placeholder="https://example.com/audio.mp3" />
 			</div>
 			<a style="color: aquamarine;">* 音乐文件是可选的(audio is optional)</a><br>
-			<a style="color: goldenrod;">请确保输入的网站允许来自sr.ycl.cool的跨域请求<br>
-				Please make sure that the website you enter allows cross-origin requests from sr.ycl.cool</a><br>
+			<a style="color: goldenrod;">
+				请确保输入的网站允许来自sr.ycl.cool的跨域请求<br>
+				Please make sure that the website you enter allows cross-origin requests from sr.ycl.cool <br>
+			</a>
 			<button onclick="VMD_process('load')">OK</button>
 		</div>
 	</div>
 	<!-- banner -->
-	<div class="banner">
+	<div class="banner" id="banner">
 		<b id="three">此页使用<a href="https://threejs.org/" style="color: aqua;">three.js</a>作为webgl渲染引擎<br></b>
 		<div id="error" style="color: red;font-weight: bolder"></div>
 	</div>
+	<b class="banner" style="color: orange; bottom: 0">
+		<!-- *当前为测试版 Is currently in beta -->
+		*当前项目分支main_oldthree非主分支 The current project branch main_oldthree is not the main branch.
+	</b>
 	<script type="module">
 		import { serverInit, userChooseServer } from './js/libs/serverInit.js';
 		import { server } from './js/libs/config.js';
-		const userSelent = document.getElementById('userSelent')
-		userSelent.addEventListener('click', () => userChooseServer())
+		import { VMD_process } from './js/3d.js';
+
+		window.VMD_process = VMD_process;
+
+		const userSelent = document.getElementById('userSelent');
+		userSelent.addEventListener('click', () => userChooseServer());
 
 		serverInit('../3d.js')
 			.then(initCode => {

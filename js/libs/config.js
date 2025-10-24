@@ -19,7 +19,12 @@ const ProgressInfo = {
         '加载模型...',
         '等待响应...',
         '加载完成, 请等待材质下载.'
-    ]
+    ],
+    Model: [
+        '模型文件:',
+        '模型和动作文件:'
+    ],
+    Skybox: '天空盒加载完成.'
 }
 
 const ProgressInfo_English = {
@@ -29,7 +34,12 @@ const ProgressInfo_English = {
         'Loading model...',
         'Waiting for a response...',
         'Loading finish, please wait for the material download.'
-    ]
+    ],
+    Model: [
+        'Model Files:',
+        'Model and Action Files:'
+    ],
+    Skybox: 'Skybox loading finish.'
 }
 
 export {
