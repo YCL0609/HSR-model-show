@@ -2,7 +2,6 @@ import { server } from "./config.js";
 export const Debug = isDebug();
 export const Timmer = new DbgTimmer(Debug);
 export let serverRoot = '';
-console.log('%cbranch => oldthree *当前项目分支非主分支', 'color: orange')
 
 async function serverInit(mainfile) {
   Timmer.Start('serverInit')
