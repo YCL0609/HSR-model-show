@@ -1,12 +1,14 @@
-import { GUI } from 'lil-gui';
 import * as UI from './UI.js';
 import * as THREE from 'three';
+import { InError } from '../3d.js';
 import { Timmer } from '../libs/serverInit.js';
 import { serverRoot } from '../libs/serverInit.js';
 import Stats from 'libs/three.js/libs/stats.module.js';
-import { MMDAnimationHelper, MMDLoader } from 'libs/three-mmd.js'
+import { GUI } from 'libs/three.js/lil-gui.module.min.js';
+import { MMDLoader } from 'libs/three.js/loaders/MMDLoader.js';
 import { OutlineEffect } from 'libs/three.js/effects/OutlineEffect.js';
 import { OrbitControls } from 'libs/three.js/controls/OrbitControls.js';
+import { MMDAnimationHelper } from 'libs/three.js/animation/MMDAnimationHelper.js';
 console.log('3D page version: ' + page_version + '\nthree.js version: ' + THREE.REVISION);
 
 let stats, vmdurl, mp3url;
@@ -16,20 +18,19 @@ const clock = new THREE.Clock();
 const loader = new MMDLoader();
 const lilgui = new GUI();
 
-// 初始化
-Timmer.Start('threeinit');
-await UI.Init();
-Timmer.Stop('threeinit', 'three初始化');
-
-// 主函数
 try {
+  // 初始化
+  Timmer.Start('threeinit');
+  await UI.Init();
+  // 主函数
   Ammo().then(AmmoLib => {
+    Timmer.Stop('threeinit', 'three初始化');
     Ammo = AmmoLib;
     init();
     animate();
   })
 } catch (e) {
-  UI.Error(2, e)
+  InError(3, e)
 }
 
 // 场景配置
@@ -88,26 +89,26 @@ async function init() {
   }, null, (err) => UI.Finish.Skybox(true, err.stack))
   // 场景模型
   Timmer.Start('bgmodel');
-  // loader.load(
-  //   `${serverRoot}/models/background/index.pmx`,
-  //   (mesh) => {
-  //     // 添加到屏幕( X:0 y:-11.7 Z:0)
-  //     mesh.position.y = -11.7;
-  //     scene.add(mesh);
-  //     const modelFolder = lilgui.addFolder('场景');
-  //     const modelParams = { x: 0, z: 0 }
-  //     modelFolder.add(modelParams, 'x', -500, 500).onChange(() => {
-  //       mesh.position.x = modelParams.x;
-  //     });
-  //     modelFolder.add(modelParams, 'z', -500, 500).onChange(() => {
-  //       mesh.position.z = modelParams.z;
-  //     });
-  //     UI.Finish.Model('text2', 'texte2', 'background');
-  //     Timmer.Stop('bgmodel', '背景模型');
-  //   },
-  //   (xhr) => UI.Progress.Model(2, xhr),
-  //   (err) => InError(5, err.stack)
-  // );
+  loader.load(
+    `${serverRoot}/models/background/index.pmx`,
+    (mesh) => {
+      // 添加到屏幕( X:0 y:-11.7 Z:0)
+      mesh.position.y = -11.7;
+      scene.add(mesh);
+      const modelFolder = lilgui.addFolder('场景');
+      const modelParams = { x: 0, z: 0 }
+      modelFolder.add(modelParams, 'x', -500, 500).onChange(() => {
+        mesh.position.x = modelParams.x;
+      });
+      modelFolder.add(modelParams, 'z', -500, 500).onChange(() => {
+        mesh.position.z = modelParams.z;
+      });
+      UI.Finish.Model('text2', 'texte2', 'background');
+      Timmer.Stop('bgmodel', '背景模型');
+    },
+    (xhr) => UI.Progress.Model(2, xhr),
+    (err) => InError(5, err.stack)
+  );
   const text = (UI.vmd == 0) ? '模型文件:' : '模型和动作文件:'
   const texten = (UI.vmd == 0) ? 'Model Files:' : 'Model and Action Files:'
   if (UI.vmd === -1) {
@@ -148,7 +149,9 @@ async function init() {
       if (UI.vmd !== 0) { Audioload(mmdMesh) };
       Timmer.Stop('mainmodel', '人物模型')
     },
-    (xhr) => UI.Progress.Model(1, xhr, text, texten),
+    (xhr) => {
+      UI.Progress.Model(1, xhr, text, texten);
+    },
     (err) => InError(6, err.stack)
   );
   (UI.vmd == 0) ? Weapons(loader) : null;
@@ -182,10 +185,8 @@ function Weapons(loader) {
     x = [0, -15, +20, +10, -10];
     z = [0, 0, 0, -20, -20];
   }
-  
   for (let i = 1; i <= UI.weapon; i++) {
     Timmer.Start(`weapon${i}`);
-    
     // 添加UI
     let info = document.createElement('div');
     info.id = `weapon${i}`;
@@ -196,7 +197,6 @@ function Weapons(loader) {
     <div id="progress-w${i}" class="progress-inside" style="width: 0%"></div>
     </div>`;
     document.getElementById('info-main').appendChild(info);
-    
     loader.load(
       `${serverRoot}/models/${UI.name}/${i}.pmx`,
       (mesh) => {
@@ -287,9 +287,18 @@ function Weapons(loader) {
   }
 }
 
-function Audioload(mmdMesh) { //
-  Timmer.Start('music'); //
-  UI.Start('music', 4, '音乐文件:', 'Music file:'); //
+function Audioload(mmd) {
+  Timmer.Start('music');
+  // 添加UI
+  let info = document.createElement('div');
+  info.id = "music";
+  info.innerHTML = `
+    <a>音乐文件:</a><a id="text4" class="text">等待启动...</a><br>
+    <a>Music file:</a><a id="texte4" class="text">Waiting for the start...</a>
+    <div class="progress">
+    <div id="progress4" class="progress-inside" style="width: 0%"></div>
+    </div>`;
+  document.getElementById('info-main').appendChild(info);
   // 监听
   const audioListener = new THREE.AudioListener(); //
   camera.add(audioListener); //
@@ -303,39 +312,25 @@ function Audioload(mmdMesh) { //
     (audioBuffer) => { //
       oceanAmbientSound.setBuffer(audioBuffer); //
       oceanAmbientSound.setLoop(true);//设置音频循环
-      document.getElementById('text4').innerText = "加载完成."; //
-      document.getElementById('music').style.display = "none"; //
-      Timmer.Stop('music', '音频文件'); //
-      setTimeout(() => { //
-        UI.Finish.MMD(); //
-        let ok = document.getElementById('start'); //
-        ok.innerText = "开始(Start)"; //
-        ok.onclick = () => { //
-          oceanAmbientSound.play();// 播放音频
-          document.getElementById('info').style.display = "none"; //
+      document.getElementById('text4').innerText = "加载完成.";
+      document.getElementById('music').style.display = "none";
+      Timmer.Stop('music', '音频文件');
+      let ok = document.getElementById('start');
+      ok.innerText = "开始(Start)";
+      ok.onclick = () => {
+        oceanAmbientSound.play();// 播放音频
+        document.getElementById('info').style.display = "none";
+        document.getElementById('banner').style.display = "none";
+        // 开始动画
+        helper.add(mesh, {
+          animation: mmd.animation,
+          physics: true
+        });
 
-          // ⚠️ FIX: 在点击时异步加载 VMD 动画
-          loader.load(
-            vmdurl,
-            (vmdData) => { // 动画数据加载成功
-              // 开始动画
-              helper.add(mmdMesh, {
-                animation: vmdData, // 传入 VMD 数据
-                physics: true
-              });
-            },
-            // progress handler (optional)
-            null,
-            // error handler
-            (err) => {
-              console.error("VMD 动画文件加载失败:", err);
-              UI.Error(5, err);
-            }
-          );
-        } //
-      }, 2000); //
-    }, //
-    (xhr) => { UI.Progress.Model(4, xhr); }, //
-    (err) => { UI.Error(7, err) } //
-  ); //
-} //F
+      };
+      UI.Finish.Count();
+    },
+    (xhr) => UI.Progress.Model(4, xhr),
+    (err) => InError(8, err.stack)
+  );
+}

@@ -2,6 +2,7 @@ import { server } from "./config.js";
 export const Debug = isDebug();
 export const Timmer = new DbgTimmer(Debug);
 export let serverRoot = '';
+console.log('%cbranch => oldthree *当前项目分支非主分支', 'color: orange')
 
 async function serverInit(mainfile) {
   Timmer.Start('serverInit')
@@ -22,9 +23,8 @@ async function serverInit(mainfile) {
   // 动态创建Import Map
   const importMap = {
     imports: {
-      "three": `${serverRoot}/js/libs/three.js/three.module.min.js`,
-      "lil-gui": `${serverRoot}/js/libs/lil-gui.esm.min.js`,
-      "libs/": `${serverRoot}/js/libs/`
+      "three": `${serverRoot}/js_oldthree/three.js/three.module.min.js`,
+      "libs/": `${serverRoot}/js_oldthree/`
     }
   };
   const script = document.createElement('script');
@@ -49,14 +49,13 @@ async function serverInit(mainfile) {
 // 获取可用服务器
 async function getServer() {
   try {
-    return server.list[0]; // Debug
-    // const userSelect = getUrlParams('server');
-    // if (server.list[userSelect]) return server.list[userSelect];
-    // const response0 = await fetch(server.list[0]);
-    // if (response0.ok) return server.list[0];
-    // const response1 = await fetch(server.list[1])
-    // if (response1.ok) return server.list[1];
-    // return -1
+    const userSelect = getUrlParams('server');
+    if (server.list[userSelect]) return server.list[userSelect];
+    const response0 = await fetch(server.list[0]);
+    if (response0.ok) return server.list[0];
+    const response1 = await fetch(server.list[1])
+    if (response1.ok) return server.list[1];
+    return -1
   } catch (_) { return -1; }
 }
 
