@@ -5,12 +5,14 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<!-- 维护时打开 -->
-	<!-- <meta http-equiv="refresh" content="0,url=updating.html"> -->
-	<link type="text/css" rel="stylesheet" href="css/3d.css">
-	<link href="favicon.ico" rel="shortcut icon">
+	<link href="https://www.ycl.cool/icon.ico" rel="shortcut icon">
 	<title>3D模型查看</title>
-	<script>const page_version = "4.0.0.1021 RC"; </script>
+	<link type="text/css" rel="stylesheet" href="css/3d.css">
+	<script>
+		const page_version = "4.0.1.1114";
+		fetch('./update', { method: "HEAD" }).then(response => { if (response.ok) window.location.href = "/updating.html" })
+	</script>
+	<!-- <script src="https://api.ycl.cool/js/function.bundle.min.js" type="module"></script> -->
 	<script src="./outsite/dist/function.bundle.min.js" type="module"></script>
 	<script src="./js/libs/serverInit.js" type="module"></script>
 	<script src="./js/baidu.js"></script>
@@ -27,21 +29,6 @@
 				<a id="texte0" class="text"></a>
 				<div class="progress">
 					<div id="progress0" class="progress-inside" style="width: 0%"></div>
-				</div>
-				<div id="jsload" style="display: none;">
-					es-module-shims.js - <a id="jsload1">Loading...</a><br>
-					ammo.wasm.js - <a id="jsload2">Loading...</a>
-				</div>
-				<div id="ServerChoose" style="margin-top: 10px;display: none;">
-					<b>您可以手动选择服务器以尝试是否可以正常加载</b><br>
-					<b>You can manually select the server to try if it can load properly</b><br>
-					<div style="margin-top: 10px;">
-						<label for="server">服务器(Server): </label>
-						<select id="server">
-							<option value="-1" style="display: none" selected></option>
-						</select>
-						<button id="userSelent">OK</button>
-					</div>
 				</div>
 			</div>
 			<div id="module" style="display: none">
@@ -73,7 +60,7 @@
 		</div>
 	</div>
 	<!-- VMD文件 -->
-	<div style="margin-top: 50px;position: fixed;background-color: #000000aa;width: 80px;text-align: center;">
+	<div class="VMD">
 		<a>动作文件</a><br>
 		<a style="font-size: small;">action files</a>
 		<button onclick="VMD_process('open')">打开列表<br>open list</button>
@@ -119,40 +106,12 @@
 	<!-- banner -->
 	<div class="banner" id="banner">
 		<b id="three">此页使用<a href="https://threejs.org/" style="color: aqua;">three.js</a>作为webgl渲染引擎<br></b>
-		<div id="error" style="color: red;font-weight: bolder"></div>
 	</div>
-	<b class="banner" style="color: orange; bottom: 0">
+	<b class="banner" style="bottom: 0">
+		<div class="fault" id="error"></div>
 		<!-- *当前为测试版 Is currently in beta -->
 	</b>
-	<script type="module">
-		import { serverInit, userChooseServer } from './js/libs/serverInit.js';
-		import { server } from './js/libs/config.js';
-		import { VMD_process } from './js/3d.js';
-
-		window.VMD_process = VMD_process;
-
-		const userSelent = document.getElementById('userSelent');
-		userSelent.addEventListener('click', () => userChooseServer());
-
-		serverInit('../3d.js')
-			.then(initCode => {
-				if (initCode !== undefined) {
-					const serverDiv = document.getElementById('server');
-					const errorDiv = document.getElementById('error')
-					errorDiv.innerText = `Script fault (code ${initCode}): Script initialization error!`;
-					errorDiv.style.backgroundColor = "#000"
-					errorDiv.style.fontWeight = 800;
-					errorDiv.style.color = "red";
-					server.info.map((info, index) => {
-						const option = document.createElement('option');
-						option.innerText = info;
-						option.value = index;
-						serverDiv.appendChild(option);
-					})
-					console.log(`%cScript fault (code ${initCode}): Script initialization error!`, 'color:red')
-				}
-			})
-	</script>
+	<script src="./js/3d.js" type="module"></script>
 </body>
 
 </html>

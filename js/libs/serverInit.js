@@ -3,18 +3,13 @@ export const Debug = isDebug();
 export const Timmer = new DbgTimmer(Debug);
 export let serverRoot = '';
 
-async function serverInit(mainfile) {
+async function serverInit() {
   Timmer.Start('serverInit')
   // 调试初始化
   let debugRoot = '';
   if (Debug) {
-    const id = Number(getUrlParams('debug'));
-    const islocal = (id === NaN) ? true : id;
-    console.log(`是否使用本地文件: %c${islocal ? true : false}`, 'color: #0ff');
-    if (islocal) {
-      const protocol = window.location.protocol.slice(0, -1);
-      if (server.debug[protocol]) debugRoot = server.debug[protocol];
-    }
+    const protocol = window.location.protocol.slice(0, -1);
+    if (server.debug[protocol]) debugRoot = server.debug[protocol];
   }
   // 获取可用服务器
   serverRoot = debugRoot ? debugRoot : await getServer();
@@ -22,27 +17,14 @@ async function serverInit(mainfile) {
   // 动态创建Import Map
   const importMap = {
     imports: {
-      "three": `${serverRoot}/js_oldthree/three.js/three.module.min.js`,
-      "libs/": `${serverRoot}/js_oldthree/`
+      "three": `${serverRoot}/js/three.module.min.js`,
+      "three/": `${serverRoot}/js/`
     }
   };
   const script = document.createElement('script');
   script.type = 'importmap';
   script.textContent = JSON.stringify(importMap);
   document.head.appendChild(script);
-  // 加载主文件
-  if (!mainfile) return 2;
-  try {
-    const mainModule = await import(mainfile)
-    if (typeof mainModule.init !== 'function') return 3;
-    Timmer.Stop('serverInit', '服务器初始化');
-    try {
-      mainModule.init();
-    } catch (_) { return } // 防止报错传递到这里
-  } catch (err) {
-    console.error(err.stack);
-    return 4;
-  }
 }
 
 // 获取可用服务器
@@ -56,14 +38,6 @@ async function getServer() {
     if (response1.ok) return server.list[1];
     return -1
   } catch (_) { return -1; }
-}
-
-// 用户服务器选择
-function userChooseServer() {
-  const selent = document.getElementById('server');
-  const serverID = selent.options[selent.selectedIndex].value;
-  if (serverID == -1) return;
-  urlChange('server', serverID);
 }
 
 // 修改 URL 参数
@@ -83,6 +57,5 @@ function urlChange(key, value) {
 
 export {
   urlChange,
-  serverInit,
-  userChooseServer
+  serverInit
 };

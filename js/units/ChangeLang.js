@@ -2,7 +2,7 @@ import { data, data2, langCfg, updateCache } from "./updateCache.js";
 import { Debug, Timmer } from "../libs/serverInit.js";
 import { WriteToTable } from "./WriteToTable.js";
 import { langList } from "../libs/config.js";
-import { InError } from "../index.js";
+import { InError } from "./InError.js";
 
 // 语言切换
 export async function ChangeLang(lang) {
@@ -25,10 +25,10 @@ export async function ChangeLang(lang) {
             phonecell.innerHTML = "";
         });
         document.getElementById('unknow').innerHTML = "";
-    } catch (error) { InError(0, error.stack) }
+    } catch (error) { InError(6, error.stack, true) }
 
     // 处理缓存
-    await updateCache(lang, InError);
+    await updateCache(lang);
 
     // 处理页脚
     document.getElementById('ver0').innerHTML = data[0]['version'];
@@ -42,10 +42,10 @@ export async function ChangeLang(lang) {
         for (let i = 1; i <= 17; i++) {
             document.getElementById(`text${i}`).innerHTML = langCfg[lang]['text'][i];
         }
-        ['tip', 'warn', 'error', 'note'].forEach((id) => {
+        ['tip', 'warn', 'note'].forEach((id) => {
             document.getElementsByClassName(id)[0].innerHTML = langCfg[lang]['text'][id];
         })
-    } catch (error) { InError(0, error.stack) }
+    } catch (error) { InError(0, error.stack, true) }
 
     // 处理按钮视觉效果
     langList.forEach((id) => {

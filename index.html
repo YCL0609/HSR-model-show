@@ -5,13 +5,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-    <!-- 维护时打开 -->
-    <!-- <meta http-equiv="refresh" content="0,url=updating.html"> -->
     <meta name="description" content="角色立绘和3D模型展示(部分模型支持使用网页预览MMD动作)，已分类模型来源为官方, 未分类模型部分来自官方部分来源于网络。">
     <meta name="author" content="YCL">
+    <link href="https://www.ycl.cool/icon.ico" rel="shortcut icon">
     <title>《崩坏:星穹铁道》角色立绘和3D模型展示</title>
-    <link href="favicon.ico" rel="shortcut icon">
+    <script>
+        fetch('./update', { method: "HEAD" }).then(response => { if (response.ok) window.location.href = "/updating.html" })
+    </script>
     <link rel="stylesheet" type="text/css" href="css/index.css">
+    <!-- <script src="https://api.ycl.cool/js/function.bundle.min.js" type="module"></script> -->
     <script src="./outsite/dist/function.bundle.min.js" type="module"></script>
     <script src="./js/baidu.js"></script>
 </head>
@@ -21,13 +23,13 @@
         <div id="title">
             <h2 id="text1" style="margin: 10px 0px">《崩坏:星穹铁道》角色立绘及3D模型展示</h2>
             <div class="info">
-                <a href="//www.ycl.cool/blog/index.php/archives/17" target="_blank">
-                    <img decoding="async" src="//res.ycl.cool/img/icon.ico" height="16" width="16">
+                <a href="https://blog.ycl.cool/index.php/archives/17/" target="_blank">
+                    <img decoding="async" src="https://www.ycl.cool/icon.ico" height="16" width="16">
                     About
                     <img decoding="async" src="img/link.svg" height="16" width="16">
                 </a>
                 &nbsp;
-                <a href="//github.com/YCL0609/Honkai-Star-Rail-Character-model-display" target="_blank">
+                <a href="https://github.com/YCL0609/Honkai-Star-Rail-Character-model-display" target="_blank">
                     <img decoding=" async" src="img/github.svg" height="16" width="16">
                     GitHub
                     <img decoding="async" src="img/link.svg" height="16" width="16">
@@ -45,21 +47,9 @@
                 发送邮件.
             </div>
             <div class="warn">
-                因未知来源网络攻击且无足够的资金, 当前使用
-                <a href="https://www.cloudflare-cn.com/"><img src="img/cloudflare.svg" height="16"></a>
-                作为CDN加速服务和网络攻击防护服务, 国内部分地区可能出现随机性访问变慢.
+                因未知来源网络攻击且无足够的资金, 当前使用Cloudflare作为CDN加速服务和网络攻击防护服务, 国内部分地区可能出现随机性访问变慢.
             </div>
-            <div class="error"></div>
-            <div class="fault" id="jserror"></div>
-            <div class="server" id="server-choose">
-                <b>资源服务器无法连接或响应超时, 可手动选择服务器尝试<br>The resource server is unreachable or the response timed out. You may
-                    manually select a server to attempt.</b><br>
-                <label for="server">服务器(Server): </label>
-                <select id="server">
-                    <option value="-1" style="display: none" selected></option>
-                </select>
-                <button id="userSelent">OK</button>
-            </div>
+            <div class="fault" id="error"></div>
         </div>
         <div id="form">
             <h3 id="text2">已分类模型</h3>
@@ -77,11 +67,11 @@
                         <!-- 雷  -->
                         <td><img loading="lazy" decoding="async" src="img/table/Lightning.png"></td>
                         <!-- 风(电脑) -->
-                        <td data-phone=1><img loading="lazy" decoding="async" src="img/table/Wind.png"></td>
+                        <td data-phone="1"><img loading="lazy" decoding="async" src="img/table/Wind.png"></td>
                         <!-- 量子(电脑) -->
-                        <td data-phone=1><img loading="lazy" decoding="async" src="img/table/Quantum.png"></td>
+                        <td data-phone="1"><img loading="lazy" decoding="async" src="img/table/Quantum.png"></td>
                         <!-- 虚数(电脑) -->
-                        <td data-phone=1><img loading="lazy" decoding="async" src="img/table/Imaginary.png"></td>
+                        <td data-phone="1"><img loading="lazy" decoding="async" src="img/table/Imaginary.png"></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,9 +85,9 @@
                         <td id="table-12"></td>
                         <td id="table-13"></td>
                         <td id="table-14"></td>
-                        <td id="table-15" data-phone=1></td>
-                        <td id="table-16" data-phone=1></td>
-                        <td id="table-17" data-phone=1></td>
+                        <td id="table-15" data-phone="1"></td>
+                        <td id="table-16" data-phone="1"></td>
+                        <td id="table-17" data-phone="1"></td>
                     </tr>
                     <!-- 巡猎  -->
                     <tr>
@@ -108,9 +98,9 @@
                         <td id="table-22"></td>
                         <td id="table-23"></td>
                         <td id="table-24"></td>
-                        <td id="table-25" data-phone=1></td>
-                        <td id="table-26" data-phone=1></td>
-                        <td id="table-27" data-phone=1></td>
+                        <td id="table-25" data-phone="1"></td>
+                        <td id="table-26" data-phone="1"></td>
+                        <td id="table-27" data-phone="1"></td>
                     </tr>
                     <!-- 智识  -->
                     <tr>
@@ -121,9 +111,9 @@
                         <td id="table-32"></td>
                         <td id="table-33"></td>
                         <td id="table-34"></td>
-                        <td id="table-35" data-phone=1></td>
-                        <td id="table-36" data-phone=1></td>
-                        <td id="table-37" data-phone=1></td>
+                        <td id="table-35" data-phone="1"></td>
+                        <td id="table-36" data-phone="1"></td>
+                        <td id="table-37" data-phone="1"></td>
                     </tr>
                     <!-- 同谐  -->
                     <tr>
@@ -134,9 +124,9 @@
                         <td id="table-42"></td>
                         <td id="table-43"></td>
                         <td id="table-44"></td>
-                        <td id="table-45" data-phone=1></td>
-                        <td id="table-46" data-phone=1></td>
-                        <td id="table-47" data-phone=1></td>
+                        <td id="table-45" data-phone="1"></td>
+                        <td id="table-46" data-phone="1"></td>
+                        <td id="table-47" data-phone="1"></td>
                     </tr>
                     <!-- 虚无  -->
                     <tr>
@@ -147,9 +137,9 @@
                         <td id="table-52"></td>
                         <td id="table-53"></td>
                         <td id="table-54"></td>
-                        <td id="table-55" data-phone=1></td>
-                        <td id="table-56" data-phone=1></td>
-                        <td id="table-57" data-phone=1></td>
+                        <td id="table-55" data-phone="1"></td>
+                        <td id="table-56" data-phone="1"></td>
+                        <td id="table-57" data-phone="1"></td>
                     </tr>
                     <!-- 存护  -->
                     <tr>
@@ -160,9 +150,9 @@
                         <td id="table-62"></td>
                         <td id="table-63"></td>
                         <td id="table-64"></td>
-                        <td id="table-65" data-phone=1></td>
-                        <td id="table-66" data-phone=1></td>
-                        <td id="table-67" data-phone=1></td>
+                        <td id="table-65" data-phone="1"></td>
+                        <td id="table-66" data-phone="1"></td>
+                        <td id="table-67" data-phone="1"></td>
                     </tr>
                     <!-- 丰饶  -->
                     <tr>
@@ -173,9 +163,9 @@
                         <td id="table-72"></td>
                         <td id="table-73"></td>
                         <td id="table-74"></td>
-                        <td id="table-75" data-phone=1></td>
-                        <td id="table-76" data-phone=1></td>
-                        <td id="table-77" data-phone=1></td>
+                        <td id="table-75" data-phone="1"></td>
+                        <td id="table-76" data-phone="1"></td>
+                        <td id="table-77" data-phone="1"></td>
                     </tr>
                     <!-- 记忆 -->
                     <tr>
@@ -186,9 +176,9 @@
                         <td id="table-82"></td>
                         <td id="table-83"></td>
                         <td id="table-84"></td>
-                        <td id="table-85" data-phone=1></td>
-                        <td id="table-86" data-phone=1></td>
-                        <td id="table-87" data-phone=1></td>
+                        <td id="table-85" data-phone="1"></td>
+                        <td id="table-86" data-phone="1"></td>
+                        <td id="table-87" data-phone="1"></td>
                     </tr>
                 </tbody>
             </table>
@@ -330,11 +320,11 @@
             <!-- *当前为测试版 Is currently in beta -->
         </b>
     </div>
-    <div class="overlay" style="display: none">
+    <div class="overlay">
         <div class="overlay-box">
             <table style="width: 100%">
                 <thead>
-                    <td colspan="5" style="background-color: #2e2e2e;color: white">角色立绘展示</td>
+                    <td colspan="5" class="picTitle">角色立绘展示</td>
                 </thead>
                 <tbody>
                     <tr>
@@ -359,58 +349,19 @@
                         <td colspan="5" id="text17">点击图片可在新标签页打开...</td>
                     </tr>
                     <tr>
-                        <td colspan="5" style="padding: 0;border: none">
-                            <h3 id="imgload" style="line-height: 0cm">Loading...</h3>
-                            <img id="img0" src="img/background.jpg" data-imgdata="no" onclick="window.open(this.src)"
-                                onload="document.getElementById('imgload').style.display = 'none'">
+                        <td colspan="5" class="picPicture">
+                            <img id="img0" src="img/background.jpg" data-imgdata="no" onclick="window.open(this.src)">
                             <img id="img1" src="" style="display: none;" data-imgdata="two"
                                 onclick="window.open(this.src)">
                         </td>
                     </tr>
                     <tr class="closebtn">
-                        <td colspan="5" onclick="closeOverlay()">关闭 (Close)</td>
-                        <script>
-                            function closeOverlay() {
-                                document.getElementsByClassName('overlay')[0].style.display = 'none';
-                                document.getElementById('btn1').style.display = 'none';
-                                document.getElementById('nomodel').style.display = 'none';
-                                document.getElementById('img0').dataset.imgdata = 'no';
-                                document.getElementById('img1').style.display = 'none';
-                            }
-                        </script>
+                        <td colspan="5" id="picClose">关闭 (Close)</td>
                     </tr>
             </table>
         </div>
     </div>
-    <script type="module">
-        import { serverInit, userChooseServer } from "./js/libs/serverInit.js";
-        import { ChangeLang } from './js/units/ChangeLang.js'
-        import { server, langList } from "./js/libs/config.js";
-        const userSelent = document.getElementById('userSelent');
-        userSelent.addEventListener('click', () => userChooseServer());
-        langList.forEach((btn) => {
-            document.getElementById(btn).addEventListener('click', () => ChangeLang(btn))
-        })
-
-        serverInit('../index.js')
-            .then(initCode => {
-                if (initCode !== undefined) {
-                    const serverDiv = document.getElementById('server');
-                    const errorDiv = document.getElementById('jserror')
-                    errorDiv.innerText = `Script fault (code ${initCode}): Script initialization error!`;
-                    errorDiv.style.backgroundColor = "#000"
-                    errorDiv.style.fontWeight = 800;
-                    errorDiv.style.color = "red";
-                    server.info.map((info, index) => {
-                        const option = document.createElement('option');
-                        option.innerText = info;
-                        option.value = index;
-                        serverDiv.appendChild(option);
-                    })
-                    console.log(`%cScript fault (code ${initCode}): Script initialization error!`, 'color:red')
-                }
-            })
-    </script>
+    <script src="./js/index.js" type="module"></script>
 </body>
 
 </html>

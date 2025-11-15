@@ -108,6 +108,7 @@ body {
 
 .fault {
     font-size: larger;
+    font-weight: 800;
     color: orange;
 }
 
@@ -172,6 +173,7 @@ tbody[data-gencell] td {
     justify-content: center;
     align-items: center;
     z-index: 999;
+    display: none;
 }
 
 .overlay-box {
@@ -184,10 +186,19 @@ tbody[data-gencell] td {
     box-shadow: 0 0 10px #000000cc;
 }
 
+.picTitle {
+    background-color: #2e2e2e;
+    color: white;
+}
+
 .overlay-box tbody td {
     width: 20%;
 }
 
+.picPicture {
+    padding: 0;
+    border: none;
+}
 
 [data-imgdata="no"] {
     display: block;
@@ -203,7 +214,7 @@ tbody[data-gencell] td {
     display: inline-block;
     width: 65%;
 }
- 
+
 .closebtn {
     padding: 0;
     border: none;
@@ -213,7 +224,7 @@ tbody[data-gencell] td {
 
 /* 黑色模式 */
 @media (prefers-color-scheme: dark) {
-    .main{
+    .main {
         background-color: #4c4c4ce1
     }
 
