@@ -42,3 +42,6 @@ if $IsBeta; then
     sed -i 's/<!-- \*当前为测试版 Is currently in beta -->/\*当前为测试版 Is currently in beta/' "$SCRIPT_DIR/index.html"
     sed -i 's/<!-- \*当前为测试版 Is currently in beta -->/\*当前为测试版 Is currently in beta/' "$SCRIPT_DIR/3d.html"
 fi
+
+# 删除构建脚本
+rm -- "$0"
