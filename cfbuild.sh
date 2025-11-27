@@ -18,6 +18,9 @@ var _hmt = _hmt || [];
 })();
 EOF
 
+# Cloudflare Pages需要404.html
+touch "$SCRIPT_DIR/404.html"
+
 # 切换到从网络加载公共函数库
 sed -i 's/.\/outsite\/dist\/function.bundle.min.js/https:\/\/api.ycl.cool\/js\/function.bundle.min.js/' "$SCRIPT_DIR/index.html"
 sed -i 's/.\/outsite\/dist\/function.bundle.min.js/https:\/\/api.ycl.cool\/js\/function.bundle.min.js/' "$SCRIPT_DIR/3d.html"
