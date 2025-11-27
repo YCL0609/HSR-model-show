@@ -18,8 +18,13 @@ var _hmt = _hmt || [];
 })();
 EOF
 
-# Cloudflare Pages需要404.html
+# 需要404.html来正常返回Http 404状态码
 touch "$SCRIPT_DIR/404.html"
+
+# 删除非必要文件
+rm -f "$SCRIPT_DIR\LICENSE"
+rm -f "$SCRIPT_DIR\README_EN.md"
+rm -f "$SCRIPT_DIR\README.md"
 
 # 切换到从网络加载公共函数库
 sed -i 's/.\/outsite\/dist\/function.bundle.min.js/https:\/\/api.ycl.cool\/js\/function.bundle.min.js/' "$SCRIPT_DIR/index.html"
