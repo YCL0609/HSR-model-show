@@ -1,40 +1,29 @@
-import { Timmer, serverRoot } from "../js/libs/serverInit.js";
-import { urlChange } from "../js/libs/serverInit.js";
+import { Timmer, serverRoot } from "./libs/serverInit.js";
+import { serverInit, urlChange } from "./libs/serverInit.js";
+import { InError } from "./units/InError.js";
 import { Progress } from "./units/UI.js";
 
-function init() {
-    Timmer.Start('load');
-    Progress.Main(0);
-    loadExternalResource(`${serverRoot}/js/libs/three.js/libs/ammo.wasm.js`, 'js')
-        .then(async () => { // 加载three.js文件
-            try {
-                Progress.Main(1)
-                import('./units/threeInit.js')
-            } catch (_) { return }// 防止报错传递到这里
-        })
-        .catch(err => InError(1, err.stack, true))
-}
-
-function InError(errid = 0, errtxt, isThrow = false) {
-    const errName = [
-        '未知错误',
-        '依赖文件加载错误',
-        '页面参数错误',
-        "three.js初始化错误",
-        "天空盒加载错误",
-        "场景模型加载错误", // 5
-        "人物模型加载错误",
-        "武器模型加载错误",
-        "MMD声音文件加载错误"
-    ];
-    console.log(`%c${errName[errid]}: ${errtxt}`, 'color: orange');
-    const errorDiv = document.getElementById('error');
-    errorDiv.innerText = `Script error (Code ${errid}): ${errName[errid]}\n${errtxt}`;
-    if (isThrow) { throw new Error(errName[errid]) }
-}
+serverInit()
+    .then(initCode => {
+        if (initCode !== undefined) {
+            document.getElementById('error').innerText = `Script fault (code ${initCode}): Script initialization error!`;
+            console.log(`%cScript fault (code ${initCode}): Script initialization error!`, 'color:red');
+        } else {
+            Timmer.Start('load');
+            Progress.Main(0);
+            loadExternalResource(`${serverRoot}/js/libs/ammo.wasm.js`, 'js')
+                .then(async () => { // 加载three.js文件
+                    try {
+                        Progress.Main(1);
+                        import('./units/threeInit.js');
+                    } catch (_) { return } // 防止报错传递到这里
+                })
+                .catch(err => InError(2, err.stack, true))
+        }
+    })
 
 // VMD文件处理
-function VMD_process(para) {
+window.VMD_process = (para) => {
     const main = document.getElementById('useVMD');
     const cho = document.getElementById('VMDchoose');
     const list = document.getElementById('VMDlist');
@@ -76,10 +65,4 @@ function VMD_process(para) {
             local.style.display = "none";
             break;
     }
-}
-
-export {
-    init,
-    InError,
-    VMD_process
 }

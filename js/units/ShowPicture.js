@@ -1,16 +1,16 @@
 import { nopic_Main, nopic_other } from "../libs/config.js";
-import { Timmer, serverRoot } from "../libs/serverInit.js";
+import { Debug, Timmer, serverRoot } from "../libs/serverInit.js";
 import { langCfg, data } from "./updateCache.js";
-import { InError } from "../index.js";
+import { InError } from "./InError.js";
 
 // 显示立绘
 export function ShowPicture(id) {
-    Timmer.Start('showpic');
-    const lang = langCfg.userSelect;
-    const text = langCfg[lang]['text'];
-    const data_text = langCfg[lang]['data'];
-
     try {
+        Timmer.Start('showpic');
+        const lang = langCfg.userSelect;
+        const text = langCfg[lang]['text'];
+        const data_text = langCfg[lang]['data'];
+
         document.getElementById('name').innerHTML = data_text[id]['name']; // 姓名
         // 属性和命途
         const parts = data[id]['data'].split(",");
@@ -35,31 +35,30 @@ export function ShowPicture(id) {
             btn1.innerText = data_text[id].special[1];
             btn1.onclick = () => { location.href = `3d.html?id=${id}&${data[id]['special']}=1` };
         }
-    } catch (error) {
-        InError(6, error.stack);
-    }
 
-    // 图像
-    const img0 = document.getElementById('img0');
-    const img1 = document.getElementById('img1');
-    img0.src = `${serverRoot}/img/character/${lang}/${id}.jpg`;
-    if (nopic_Main.includes(id)) { // 开拓者
-        img0.dataset.imgdata = "two";
-        img1.style.display = null;
-        img1.src = `${serverRoot}/img/character/${lang}/${id}_isman.jpg`;
-        Debug ? log(`ID:${id} 使用双立绘`) : null
-    } else if (nopic_other.includes(id)) { // 无人物介绍立绘
-        img0.dataset.imgdata = "center";
-        Debug ? log(`ID:${id} 使用大招立绘`) : null
-    } else {
-        fetch(`${serverRoot}/img/character/${lang}/${id}.txt`, { method: 'HEAD' })
-            .then(response => {
-                if (response.ok) {
-                    img0.src = `${serverRoot}/img/character/zh/${id}.jpg`;
-                    Debug ? log(`ID:${id} 使用中文立绘图`) : null
-                }
-            })
-            .catch(e => { console.log(e) })
+        // 图像
+        const img0 = document.getElementById('img0');
+        const img1 = document.getElementById('img1');
+        img0.src = `${serverRoot}/img/character/${lang}/${id}.jpg`;
+        if (nopic_Main.includes(id)) { // 开拓者
+            img0.dataset.imgdata = "two";
+            img1.style.display = null;
+            img1.src = `${serverRoot}/img/character/${lang}/${id}_isman.jpg`;
+            Debug ? log(`ID:${id} 使用双立绘`) : null
+        } else if (nopic_other.includes(id)) { // 无人物介绍立绘
+            img0.dataset.imgdata = "center";
+            Debug ? log(`ID:${id} 使用大招立绘`) : null
+        } else {
+            fetch(`${serverRoot}/img/character/${lang}/${id}.txt`, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        img0.src = `${serverRoot}/img/character/zh/${id}.jpg`;
+                        Debug ? log(`ID:${id} 使用中文立绘图`) : null
+                    }
+                })
+        }
+        Timmer.Stop('showpic', '显示立绘')
+    } catch (error) {
+        InError(7, error.stack);
     }
-    Timmer.Stop('showpic', '显示立绘')
 }

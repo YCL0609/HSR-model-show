@@ -1,40 +1,37 @@
-import { GUI } from 'lil-gui';
 import * as UI from './UI.js';
 import * as THREE from 'three';
-import { Timmer } from '../libs/serverInit.js';
-import { serverRoot } from '../libs/serverInit.js';
-import Stats from 'libs/three.js/libs/stats.module.js';
-import { MMDAnimationHelper, MMDLoader } from 'libs/three-mmd.js'
-import { OutlineEffect } from 'libs/three.js/effects/OutlineEffect.js';
-import { OrbitControls } from 'libs/three.js/controls/OrbitControls.js';
-console.log('3D page version: ' + page_version + '\nthree.js version: ' + THREE.REVISION);
+import { InError } from "./InError.js";
+import { loadModule } from './loadModule.js';
+import Stats from 'three/libs/stats.module.js';
+import { GUI } from 'three/lil-gui.module.min.js';
+import { serverRoot, Timmer } from '../libs/serverInit.js';
+import { OrbitControls } from 'three/controls/OrbitControls.js';
+import { MMDAnimationHelper } from 'three/animation/MMDAnimationHelper.js';
+console.log(`3D page version: ${page_version}\nthree.js version: ${THREE.REVISION}`);
 
-let stats, vmdurl, mp3url;
-let helper, mesh;
-let camera, scene, renderer, effect;
+export let stats, helper, camera, scene, renderer, effect;
+export const lilgui = new GUI();
 const clock = new THREE.Clock();
-const loader = new MMDLoader();
-const lilgui = new GUI();
 
-// 初始化
-Timmer.Start('threeinit');
-await UI.Init();
-Timmer.Stop('threeinit', 'three初始化');
-
-// 主函数
 try {
+  // 初始化
+  Timmer.Start('threeinit');
+  await UI.Init();
+  // 主函数
   Ammo().then(AmmoLib => {
+    Timmer.Stop('threeinit', 'three初始化');
     Ammo = AmmoLib;
     init();
     animate();
   })
 } catch (e) {
-  UI.Error(2, e)
+  InError(9, e.stack, true)
 }
 
 // 场景配置
 async function init() {
-  Timmer.Start('screeninit')
+  Timmer.Start('screeninit');
+  UI.Progress.Main(2);
   const container = document.createElement('div');
   document.body.appendChild(container);
   // 相机
@@ -69,14 +66,13 @@ async function init() {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
-  effect = new OutlineEffect(renderer);
   // 模型加载器
   helper = new MMDAnimationHelper();
   // 帧数显示和其他
   stats = new Stats();
   container.appendChild(stats.dom);
   Timmer.Stop('screeninit', '画布初始化');
-  UI.Progress.Main(2);
+  UI.Progress.Main(3);
   // 天空盒
   Timmer.Start('skybox');
   const skybox = new THREE.CubeTextureLoader();
@@ -87,72 +83,7 @@ async function init() {
     Timmer.Stop('skybox', '天空盒');
   }, null, (err) => UI.Finish.Skybox(true, err.stack))
   // 场景模型
-  Timmer.Start('bgmodel');
-  // loader.load(
-  //   `${serverRoot}/models/background/index.pmx`,
-  //   (mesh) => {
-  //     // 添加到屏幕( X:0 y:-11.7 Z:0)
-  //     mesh.position.y = -11.7;
-  //     scene.add(mesh);
-  //     const modelFolder = lilgui.addFolder('场景');
-  //     const modelParams = { x: 0, z: 0 }
-  //     modelFolder.add(modelParams, 'x', -500, 500).onChange(() => {
-  //       mesh.position.x = modelParams.x;
-  //     });
-  //     modelFolder.add(modelParams, 'z', -500, 500).onChange(() => {
-  //       mesh.position.z = modelParams.z;
-  //     });
-  //     UI.Finish.Model('text2', 'texte2', 'background');
-  //     Timmer.Stop('bgmodel', '背景模型');
-  //   },
-  //   (xhr) => UI.Progress.Model(2, xhr),
-  //   (err) => InError(5, err.stack)
-  // );
-  const text = (UI.vmd == 0) ? '模型文件:' : '模型和动作文件:'
-  const texten = (UI.vmd == 0) ? 'Model Files:' : 'Model and Action Files:'
-  if (UI.vmd === -1) {
-    document.getElementById('useVMD').style.display = "";
-    document.getElementById('VMDchoose').style.display = "none";
-    document.getElementById('localVMD').style.display = "";
-    await new Promise((resolve) => {
-      const check_value = setInterval(() => {
-        if (window.loadok) {
-          clearInterval(check_value); // 清除定时器
-          vmdurl = document.getElementById('vmdInput').value;
-          mp3url = document.getElementById('mp3Input').value || `${serverRoot}/vmd/0/index.mp3`;
-          resolve(); // 解析 Promise
-        }
-      }, 1500); // 每1500毫秒检查一次
-    });
-  } else {
-    vmdurl = `${serverRoot}/vmd/${UI.vmd}/index.vmd`;
-    mp3url = `${serverRoot}/vmd/${UI.vmd}/index.mp3`;
-  }
-  Timmer.Start('mainmodel');
-  loader.load(
-    `${serverRoot}/models/${UI.name}/index.pmx`,
-    (mmdMesh) => {
-      // 添加到屏幕( X:0 y:-10 Z:0)
-      mesh = mmdMesh;
-      mesh.position.y = -10;
-      scene.add(mesh);
-      const modelFolder = lilgui.addFolder('人物');
-      const modelParams = { x: 0, z: 0 }
-      modelFolder.add(modelParams, 'x', -200, 200).onChange(() => {
-        mesh.position.x = modelParams.x;
-      });
-      modelFolder.add(modelParams, 'z', -200, 200).onChange(() => {
-        mesh.position.z = modelParams.z;
-      });
-      UI.Finish.Model('text1', 'texte1', 'module')
-      if (UI.vmd !== 0) { Audioload(mmdMesh) };
-      Timmer.Stop('mainmodel', '人物模型')
-    },
-    (xhr) => UI.Progress.Model(1, xhr, text, texten),
-    (err) => InError(6, err.stack)
-  );
-  (UI.vmd == 0) ? Weapons(loader) : null;
-
+  await loadModule();
   // 相机
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.minDistance = 0;
@@ -161,7 +92,6 @@ async function init() {
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    effect.setSize(window.innerWidth, window.innerHeight);
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 }
@@ -171,171 +101,6 @@ function animate() {
   helper.update(clock.getDelta());
   requestAnimationFrame(animate);
   stats.begin();
-  effect.render(scene, camera);
+  renderer.render(scene, camera);
   stats.end();
 }
-
-function Weapons(loader) {
-  let x = [0, -15, +20, +10, -10, -20, 0, +20];
-  let z = [0, 0, 0, -15, -15, -15, -15, -15];
-  if (UI.name == 27) { // 素裳(大赤鸢模型太大)
-    x = [0, -15, +20, +10, -10];
-    z = [0, 0, 0, -20, -20];
-  }
-  
-  for (let i = 1; i <= UI.weapon; i++) {
-    Timmer.Start(`weapon${i}`);
-    
-    // 添加UI
-    let info = document.createElement('div');
-    info.id = `weapon${i}`;
-    info.innerHTML = `
-    <a>武器模型${i}:</a><a id="text-w${i}" class="text">等待启动...</a><br>
-    <a>Weapon model${i}:</a><a id="texte-w${i}" class="text">Waiting for the start...</a>
-    <div class="progress">
-    <div id="progress-w${i}" class="progress-inside" style="width: 0%"></div>
-    </div>`;
-    document.getElementById('info-main').appendChild(info);
-    
-    loader.load(
-      `${serverRoot}/models/${UI.name}/${i}.pmx`,
-      (mesh) => {
-
-        // 修复 THREE.js r150+ 版本与 three-mmd 材质的 Morph Targets 不兼容问题
-        // mesh.traverse(function (child) {
-        //   // 确保是 Mesh 且有 Material
-        //   if (!child.isMesh || !child.material || !child.geometry.morphAttributes.position) return;
-
-        //   // 处理单个材质或材质数组
-        //   const materials = Array.isArray(child.material) ? child.material : [child.material];
-
-        //   materials.forEach(material => {
-        //     // 检查是否是 MMDToonMaterial
-        //     if (material.isMMDToonMaterial) {
-              
-        //       const geometry = child.geometry;
-        //       const morphCount = geometry.morphAttributes.position.length;
-              
-        //       // 仅对带有 Morph Targets 的材质应用修复
-        //       if (morphCount > 0) {
-                
-        //         // 缓存 three-mmd 自己的 onBeforeCompile
-        //         const originalOnBeforeCompile = material.onBeforeCompile;
-
-        //         // 覆盖 onBeforeCompile
-        //         material.onBeforeCompile = (shader, renderer) => {
-        //           // 1. 调用原始的 onBeforeCompile，保留 three-mmd 的材质逻辑
-        //           if (originalOnBeforeCompile) {
-        //             originalOnBeforeCompile(shader, renderer);
-        //           }
-
-        //           // 2. 核心修复：执行字符串替换以绕过 three.js 宏定义缺失的检查。
-        //           // 这些替换针对 Vertex Shader 中的三个错误行进行精准修复。
-                  
-        //           // a. 修复第 307 行: uniform float morphTargetInfluences[ MORPHTARGETS_COUNT ];
-        //           //    将 [ MORPHTARGETS_COUNT ] 替换为实际数量 [ N ]
-        //           //    (GLSL 要求数组大小是常量)
-        //           shader.vertexShader = shader.vertexShader.replace(
-        //             'uniform float morphTargetInfluences[ MORPHTARGETS_COUNT ];',
-        //             `uniform float morphTargetInfluences[ ${morphCount} ];` 
-        //           );
-
-        //           // b. 修复第 312 行: int texelIndex = vertexIndex * MORPHTARGETS_TEXTURE_STRIDE + offset;
-        //           //    将 MORPHTARGETS_TEXTURE_STRIDE 替换为常量 float '4.0'
-        //           shader.vertexShader = shader.vertexShader.replace(
-        //             'int texelIndex = vertexIndex * MORPHTARGETS_TEXTURE_STRIDE + offset;',
-        //             'int texelIndex = vertexIndex * 4 + offset;' // 4是MMDToon材质通常的步长
-        //           );
-                  
-        //           // c. 修复第 563 行: < MORPHTARGETS_COUNT (在循环条件中)
-        //           //    < MORPHTARGETS_COUNT 替换为 < N
-        //           shader.vertexShader = shader.vertexShader.replace(
-        //             /< MORPHTARGETS_COUNT/g,
-        //             `< ${morphCount}.0` // 使用 float 避免 GLSL 类型推断问题
-        //           );
-                  
-        //           console.log(`MMDToonMaterial: ${material.name} - Morph Target Shader Fix Applied.`);
-        //         };
-                
-        //         // 3. 强制 THREE.js 重新编译这个材质
-        //         // ⚠️ 这必须在设置 onBeforeCompile 之后调用，以触发编译。
-        //         material.needsUpdate = true; 
-        //       }
-        //     }
-        //   });
-        // });
-
-        // 添加到屏幕(X,Y,Z)
-        mesh.position.x = x[i];
-        mesh.position.y = -7;
-        mesh.position.z = z[i];
-        const modelFolder = lilgui.addFolder(`武器${i}`);
-        const modelParams = { x: x[i], z: z[i] }
-        modelFolder.add(modelParams, 'x', -200, 200).onChange(() => {
-          mesh.position.x = modelParams.x;
-        });
-        modelFolder.add(modelParams, 'z', -200, 200).onChange(() => {
-          mesh.position.z = modelParams.z;
-        });
-        scene.add(mesh);
-        UI.Finish.Model(`text-w${i}`, `texte-w${i}`, `weapon${i}`);
-        Timmer.Stop(`weapon${i}`, `武器模型${i}`)
-      },
-      (xhr) => UI.Progress.Model(`-w${i}`, xhr),
-      (err) => InError(7, err.stack)
-    );
-  }
-}
-
-function Audioload(mmdMesh) { //
-  Timmer.Start('music'); //
-  UI.Start('music', 4, '音乐文件:', 'Music file:'); //
-  // 监听
-  const audioListener = new THREE.AudioListener(); //
-  camera.add(audioListener); //
-  // 音频对象
-  const oceanAmbientSound = new THREE.Audio(audioListener); //
-  scene.add(oceanAmbientSound); //
-  // 加载音频资源
-  const loader2 = new THREE.AudioLoader(); //
-  loader2.load( //
-    mp3url, //
-    (audioBuffer) => { //
-      oceanAmbientSound.setBuffer(audioBuffer); //
-      oceanAmbientSound.setLoop(true);//设置音频循环
-      document.getElementById('text4').innerText = "加载完成."; //
-      document.getElementById('music').style.display = "none"; //
-      Timmer.Stop('music', '音频文件'); //
-      setTimeout(() => { //
-        UI.Finish.MMD(); //
-        let ok = document.getElementById('start'); //
-        ok.innerText = "开始(Start)"; //
-        ok.onclick = () => { //
-          oceanAmbientSound.play();// 播放音频
-          document.getElementById('info').style.display = "none"; //
-
-          // ⚠️ FIX: 在点击时异步加载 VMD 动画
-          loader.load(
-            vmdurl,
-            (vmdData) => { // 动画数据加载成功
-              // 开始动画
-              helper.add(mmdMesh, {
-                animation: vmdData, // 传入 VMD 数据
-                physics: true
-              });
-            },
-            // progress handler (optional)
-            null,
-            // error handler
-            (err) => {
-              console.error("VMD 动画文件加载失败:", err);
-              UI.Error(5, err);
-            }
-          );
-        } //
-      }, 2000); //
-    }, //
-    (xhr) => { UI.Progress.Model(4, xhr); }, //
-    (err) => { UI.Error(7, err) } //
-  ); //
-} //F

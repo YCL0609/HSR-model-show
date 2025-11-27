@@ -1,7 +1,7 @@
+import { InError } from "./InError.js";
 import { nopic } from "../libs/config.js";
 import { Timmer } from "../libs/serverInit.js";
 import { ShowPicture } from "./ShowPicture.js";
-import { InError } from "../index.js";
 
 // 生成表格
 export function WriteToTable(data, text, ismain) {
@@ -37,9 +37,7 @@ export function WriteToTable(data, text, ismain) {
             if (!cell) continue;
 
             // 获取表格片段
-            if (!cellFragments[cellId]) {
-                cellFragments[cellId] = document.createDocumentFragment();
-            }
+            if (!cellFragments[cellId]) cellFragments[cellId] = document.createDocumentFragment();
             const fragment = cellFragments[cellId];
             const a = document.createElement('a');
             const note = document.createElement('a');
@@ -113,6 +111,6 @@ export function WriteToTable(data, text, ismain) {
             }
         }
 
-    } catch (error) { InError(5, (ismain ? '主表格错误' : '副表格错误') + error.stack, true) }
+    } catch (error) { InError(6, (ismain ? 'Main form error' : 'Sub form error') + error.stac) }
     Timmer.Stop(`totab${ismain ? 'Main' : ''}`, `${ismain ? '主' : '副'}表格生成`);
 }

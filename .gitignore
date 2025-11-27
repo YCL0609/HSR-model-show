@@ -1,2 +1,7 @@
 outsite/
 outsite
+# 百度统计
+js/baidu.js
+# 临时文件
+*.zip
+*.7z

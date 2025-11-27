@@ -113,9 +113,23 @@ body {
 	min-width: 100px;
 }
 
+.VMD {
+	width: 80px;
+	position: fixed;
+	margin-top: 50px;
+	text-align: center;
+	background-color: #000000aa;
+}
+
 .banner {
 	width: 100%;
 	z-index: 99999;
 	position: fixed;
 	text-align: center;
+}
+
+.fault {
+	bottom: 0;
+	color: orange;
+	font-weight: 800;
 }

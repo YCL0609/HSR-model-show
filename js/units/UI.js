@@ -1,12 +1,11 @@
 import { ProgressInfo, ProgressInfo_English } from "../libs/config.js";
 import { data, data2, updateCache, updateVMDCache } from "./updateCache.js";
-import { InError } from "../3d.js";
+import { InError } from "./InError.js";
 let id, name, vmd, other, weapon, roledata;
 let onload = 0;
 
 async function Init() {
     try {
-        Progress.Main(3);
         // 人物ID相关
         id = getUrlParams('id');
         const idnum = parseInt(id);
@@ -16,8 +15,8 @@ async function Init() {
         // 缓存处理
         await updateCache('zh', InError);
         // 合规性检查
-        if (isNaN(parseInt(vmd)) || vmd < -1 || vmd > 3) InError(2, `参数vmd值${vmd}非法`);
-        if (isNaN(idnum) || idnum <= 0 || idnum > data[0]['total']) InError(2, `参数id值${id}非法`);
+        if (isNaN(parseInt(vmd)) || vmd < -1 || vmd > 3) InError(8, `The parameter 'vmd' value is invalid.`, true);
+        if (isNaN(idnum) || idnum <= 0 || idnum > data[0]['total']) InError(8, `The parameter 'id' value is invalid.`, true);
         // 获取文件夹名等
         other = getUrlParams('other') ?? false;
         roledata = other ? data2[id] : data[id];
@@ -25,12 +24,11 @@ async function Init() {
         if (roledata['special']) name = roledata['folder'] + (getUrlParams(roledata['special']) ? `_${roledata['special']}` : '');
         weapon = roledata['weapons'] ?? 0;
         // UI相关
-        document.getElementById('jsload').style.display = "none";
         document.getElementById('skybox').style.display = null;
         document.getElementById('module').style = null;
         document.getElementById('background').style = null;
     } catch (e) {
-        InError(0, e)
+        InError(0, e.stack, true)
     }
 }
 
@@ -42,7 +40,7 @@ const Progress = {
         if (!ProgressInfo.Main[level] || !ProgressInfo_English.Main[level]) return;
         TextMain.innerText = ProgressInfo.Main[level];
         TextMainEnglish.innerText = ProgressInfo_English.Main[level];
-        ProgressBar.style.width = (level + 1) * 25 + "%";
+        ProgressBar.style.width = level * 25 + "%";
     },
     Model: (id, xhr, text = '', texten = '') => {
         document.getElementById(`text${id}`).innerText = text + "(" + (xhr.loaded / 1024).toFixed(0) + " KB/" + (xhr.total / 1024).toFixed(0) + " KB)";
@@ -75,7 +73,7 @@ const Finish = {
     Skybox: (isError = false) => {
         if (isError) {
             document.getElementById('progress3').style.backgroundColor = "red";
-            InError(3);
+            InError(10, 'Skybox loading error');
         }
         document.getElementById('text3').innerText = ProgressInfo.Skybox;
         document.getElementById('texte3').innerText = ProgressInfo_English.Skybox;
@@ -114,7 +112,7 @@ const Finish = {
     MMD: async () => {
         Finish.Main();
         // 检查并获取缓存
-        const vmddata = await updateVMDCache(InError);
+        const vmddata = await updateVMDCache(vmd);
         // 借物表
         const from = other ? roledata['from'] : "神帝宇";
         const main = document.getElementById('main');
