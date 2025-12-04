@@ -27,7 +27,7 @@ async function updateCache(lang) {
 
     // 判断是否需要更新
     const isCacheok = langData != null && mainData != null;
-    const localVer = localStorage.getItem('lang_version').trim();
+    const localVer = (localStorage.getItem('lang_version') ?? '').trim();
     const isVerok = serverVer != null && localVer == serverVer;
     isUpdate = !isCacheok || !isVerok;
     isUpdate = true
