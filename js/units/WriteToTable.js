@@ -111,6 +111,6 @@ export function WriteToTable(data, text, ismain) {
             }
         }
 
-    } catch (error) { InError(6, (ismain ? 'Main form error' : 'Sub form error') + error.stac) }
+    } catch (error) { InError(6, (ismain ? 'Main form error' : 'Sub form error') + error.stack) }
     Timmer.Stop(`totab${ismain ? 'Main' : ''}`, `${ismain ? '主' : '副'}表格生成`);
 }

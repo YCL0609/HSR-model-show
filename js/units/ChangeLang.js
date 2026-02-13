@@ -14,7 +14,7 @@ export async function ChangeLang(lang) {
 
     // 清空表格
     try {
-        const formcell = Array.from({ length: 8 }, (_, i) =>
+        const formcell = Array.from({ length: 9 }, (_, i) =>
             Array.from({ length: 7 }, (_, j) => (i + 1) * 10 + (j + 1))
         ).flat();
         formcell.forEach(id => {
@@ -33,6 +33,7 @@ export async function ChangeLang(lang) {
     // 处理页脚
     document.getElementById('ver0').innerHTML = data[0]['version'];
     document.getElementById('ver1').innerHTML = data[0]['version2'];
+    
     // 处理主副表格
     WriteToTable(data, langCfg[lang].data, true);
     WriteToTable(data2, langCfg[lang].data2, false);
