@@ -30,7 +30,6 @@ async function updateCache(lang) {
     const localVer = (localStorage.getItem('lang_version') ?? '').trim();
     const isVerok = serverVer != null && localVer == serverVer;
     isUpdate = !isCacheok || !isVerok;
-    isUpdate = true
     if (isUpdate) {
         // 从网络获取数据
         Debug ? console.log('缓存: %c使用网络资源', 'color:#ff0') : null;
