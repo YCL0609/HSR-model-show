@@ -1,5 +1,5 @@
 # 崩坏：星穹铁道角色模型展示
-English version please see [README_EN.md][en]
+English version please see [README.md][en]
 ## 前言
 官方模型及立绘素材的权利归米哈游所有, 其他内容的相关权利均归各自所有者享有. 如有侵权, 请向 [email@ycl.cool][0] 发送邮件.
 ## js/libs 目录
@@ -171,5 +171,5 @@ units/threeInit.js
         └── // 其他动作模型和音乐
 ```
 
-[en]: README_EN.md
+[en]: README.md
 [0]: mailto:email@ycl.cool

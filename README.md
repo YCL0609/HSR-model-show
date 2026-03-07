@@ -1,5 +1,5 @@
 # Honkai:Star Rail Character model display
-中文请查看 [README.md][cn]
+中文请查看 [README_ZH.md][cn]
 ## Preface
 <b><i>If the Chinese and English versions differ in meaning, the Chinese version takes precedence.</i></b><br>
 The rights to the official models and character illustrations belong to miHoYo, while the rights to other content are owned by their respective owners. If there is any infringement, please send an email to [email@ycl.cool][0].
@@ -117,5 +117,5 @@ units/threeInit.js
         └── // Other action models and music
 ```
 
-[cn]: README.md
+[cn]: README_ZH.md
 [0]: mailto:email@ycl.cool
