@@ -1,5 +1,6 @@
 import { ProgressInfo, ProgressInfo_English } from "../libs/config.js";
 import { data, data2, updateCache, updateVMDCache } from "./updateCache.js";
+import { getUrlParams } from "../libs/serverInit.js";
 import { InError } from "./InError.js";
 let id, name, vmd, other, weapon, roledata;
 let onload = 0;

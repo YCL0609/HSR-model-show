@@ -1,5 +1,5 @@
 const server = {
-    list: ['//server0.ycl.cool/srroot', '//server1.ycl.cool/srroot'],
+    list: ['//server0.ycl.cool/srroot', '//server1.ycl.cool/srroot', '//server2.ycl.cool/srroot'],
     debug: {
         http: "//localhost:8081",
         https: "//localhost/sr_db"

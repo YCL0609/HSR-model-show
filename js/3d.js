@@ -1,4 +1,4 @@
-import { Timmer, serverRoot } from "./libs/serverInit.js";
+import { Timmer, serverRoot, loadExternalResource } from "./libs/serverInit.js";
 import { serverInit, urlChange } from "./libs/serverInit.js";
 import { InError } from "./units/InError.js";
 import { Progress } from "./units/UI.js";
@@ -65,4 +65,19 @@ window.VMD_process = (para) => {
             local.style.display = "none";
             break;
     }
+}
+
+// 修改 URL 参数
+function urlChange(key, value) {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    // 修改或添加参数
+    if (params.has(key)) {
+        params.set(key, value);
+    } else {
+        params.append(key, value);
+    }
+    // 构造新 URL 并跳转
+    const newUrl = `${url.origin}${url.pathname}?${params.toString()}`;
+    window.location.href = newUrl;
 }

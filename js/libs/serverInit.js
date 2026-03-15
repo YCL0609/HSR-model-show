@@ -1,3 +1,5 @@
+// import { isDebug, DbgTimmer, getUrlParams, ServerChoose, loadExternalResource } from "../../outsite/dist/function.esm.min.js"
+import { isDebug, DbgTimmer, getUrlParams, ServerChoose, loadExternalResource } from "https://tool.ycl.cool/public-library/function.esm.min.js"
 import { server } from "./config.js";
 export const Debug = isDebug();
 export const Timmer = new DbgTimmer(Debug);
@@ -32,30 +34,14 @@ async function getServer() {
   try {
     const userSelect = getUrlParams('server');
     if (server.list[userSelect]) return server.list[userSelect];
-    const response0 = await fetch(server.list[0]);
-    if (response0.ok) return server.list[0];
-    const response1 = await fetch(server.list[1])
-    if (response1.ok) return server.list[1];
-    return -1
+    const servers = await ServerChoose(server.list, Debug);
+    if (servers.length === 0) return -1;
+    return server[0].url;
   } catch (_) { return -1; }
 }
 
-// 修改 URL 参数
-function urlChange(key, value) {
-  const url = new URL(window.location.href);
-  const params = url.searchParams;
-  // 修改或添加参数
-  if (params.has(key)) {
-    params.set(key, value);
-  } else {
-    params.append(key, value);
-  }
-  // 构造新 URL 并跳转
-  const newUrl = `${url.origin}${url.pathname}?${params.toString()}`;
-  window.location.href = newUrl;
-}
-
 export {
-  urlChange,
-  serverInit
-};
+  serverInit,
+  getUrlParams,
+  loadExternalResource,
+}
