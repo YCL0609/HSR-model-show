@@ -14,7 +14,7 @@ async function serverInit() {
     if (server.debug[protocol]) debugRoot = server.debug[protocol];
   }
   // 获取可用服务器
-  serverRoot = debugRoot ? debugRoot : await getServer();
+  serverRoot = debugRoot ? debugRoot : await getServer(server.list);
   if (serverRoot === -1) return 1;
   // 动态创建Import Map
   const importMap = {
@@ -34,9 +34,9 @@ async function getServer() {
   try {
     const userSelect = getUrlParams('server');
     if (server.list[userSelect]) return server.list[userSelect];
-    const servers = await ServerChoose(server.list, Debug);
-    if (servers.length === 0) return -1;
-    return server[0].url;
+    const results = await ServerChoose(server.list, Debug);
+    if (results.length === 0) return -1;
+    return results[0].url;
   } catch (_) { return -1; }
 }
 

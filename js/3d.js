@@ -1,5 +1,5 @@
 import { Timmer, serverRoot, loadExternalResource } from "./libs/serverInit.js";
-import { serverInit, urlChange } from "./libs/serverInit.js";
+import { serverInit } from "./libs/serverInit.js";
 import { InError } from "./units/InError.js";
 import { Progress } from "./units/UI.js";
 
