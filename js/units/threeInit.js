@@ -10,12 +10,13 @@ import { MMDAnimationHelper } from 'three/animation/MMDAnimationHelper.js';
 console.log(`3D page version: ${page_version}\nthree.js version: ${THREE.REVISION}`);
 
 export let stats, helper, camera, scene, renderer, effect;
-export const lilgui = new GUI();
+export const lilgui = new GUI({ closeFolders: true });
 const clock = new THREE.Clock();
 
 try {
   // 初始化
   Timmer.Start('threeinit');
+  lilgui.close();
   await UI.Init();
   // 主函数
   Ammo().then(AmmoLib => {

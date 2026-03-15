@@ -1,5 +1,6 @@
-import { ProgressInfo, ProgressInfo_English } from "../libs/config.js";
 import { data, data2, updateCache, updateVMDCache } from "./updateCache.js";
+import { ProgressInfo, ProgressInfo_English } from "../libs/config.js";
+import { getUrlParams } from "YCL-Public-library";
 import { InError } from "./InError.js";
 let id, name, vmd, other, weapon, roledata;
 let onload = 0;
@@ -62,8 +63,6 @@ const Finish = {
     },
     // 主进度条
     Main: () => {
-        let title = document.getElementsByClassName('title');
-        for (let i = 0; i < title.length; i++) title[i].click();
         document.getElementById('text0').innerText = ProgressInfo[4];
         document.getElementById('texte0').innerText = ProgressInfo_English[4];
         document.getElementById('progress0').style.width = "100%";

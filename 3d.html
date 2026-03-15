@@ -8,14 +8,14 @@
 	<link href="https://www.ycl.cool/icon.ico" rel="shortcut icon">
 	<title>3D模型查看</title>
 	<link type="text/css" rel="stylesheet" href="css/3d.css">
-	<script>
-		const page_version = "4.0.1.1114";
-		fetch('./update', { method: "HEAD" }).then(response => { if (response.ok) window.location.href = "/updating.html" })
-	</script>
-	<script src="https://api.ycl.cool/js/function.bundle.min.js" type="module"></script>
-	<!-- <script src="./outsite/dist/function.umd.min.js" type="module"></script> -->
-	<script src="./js/libs/serverInit.js" type="module"></script>
-	<script src="./js/baidu.js"></script>
+	<script> const page_version = "4.0.1.1114"; </script>
+	<script type="importmap">{
+        "imports":{
+            "YCL-Public-library":"https://tool.ycl.cool/public-library/function.esm.min.js",
+            "three":"./js/libs/three/three.module.min.js",
+            "three/":"./js/libs/three/"
+        }
+    }</script>
 </head>
 
 <body>

@@ -1,9 +1,10 @@
+import { isDebug, DbgTimmer, getUrlParams, ServerChoose } from "YCL-Public-library"
 import { server } from "./config.js";
 export const Debug = isDebug();
 export const Timmer = new DbgTimmer(Debug);
 export let serverRoot = '';
 
-async function serverInit() {
+export async function serverInit() {
   Timmer.Start('serverInit')
   // 调试初始化
   let debugRoot = '';
@@ -12,19 +13,8 @@ async function serverInit() {
     if (server.debug[protocol]) debugRoot = server.debug[protocol];
   }
   // 获取可用服务器
-  serverRoot = debugRoot ? debugRoot : await getServer();
+  serverRoot = debugRoot ? debugRoot : await getServer(server.list);
   if (serverRoot === -1) return 1;
-  // 动态创建Import Map
-  const importMap = {
-    imports: {
-      "three": `${serverRoot}/js/three.module.min.js`,
-      "three/": `${serverRoot}/js/`
-    }
-  };
-  const script = document.createElement('script');
-  script.type = 'importmap';
-  script.textContent = JSON.stringify(importMap);
-  document.head.appendChild(script);
 }
 
 // 获取可用服务器
@@ -32,30 +22,8 @@ async function getServer() {
   try {
     const userSelect = getUrlParams('server');
     if (server.list[userSelect]) return server.list[userSelect];
-    const response0 = await fetch(server.list[0]);
-    if (response0.ok) return server.list[0];
-    const response1 = await fetch(server.list[1])
-    if (response1.ok) return server.list[1];
-    return -1
+    const results = await ServerChoose(server.list, Debug);
+    if (results.length === 0) return -1;
+    return results[0].url;
   } catch (_) { return -1; }
 }
-
-// 修改 URL 参数
-function urlChange(key, value) {
-  const url = new URL(window.location.href);
-  const params = url.searchParams;
-  // 修改或添加参数
-  if (params.has(key)) {
-    params.set(key, value);
-  } else {
-    params.append(key, value);
-  }
-  // 构造新 URL 并跳转
-  const newUrl = `${url.origin}${url.pathname}?${params.toString()}`;
-  window.location.href = newUrl;
-}
-
-export {
-  urlChange,
-  serverInit
-};
